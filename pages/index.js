@@ -1498,15 +1498,16 @@ const ladybugCSS = `
 @media(max-width:900px){.lb-garden{display:none}}
 .lb-tulip-stem{position:absolute;left:8px;width:48px}
 .lb-bug{
-  position:fixed;left:18px;z-index:500;pointer-events:none;
+  position:fixed;left:28px;z-index:500;pointer-events:none;
   transition:top 1.4s cubic-bezier(0.25,0.1,0.25,1);
   will-change:top;
 }
 .lb-bug.flying .lb-shell{opacity:0}
 .lb-bug.flying .lb-wing-l{animation:lbFlutterL 0.18s ease-in-out infinite}
 .lb-bug.flying .lb-wing-r{animation:lbFlutterR 0.18s ease-in-out infinite}
-.lb-bug.sitting .lb-wing-l,.lb-bug.sitting .lb-wing-r{animation:none;transform:rotate(0) scaleX(1)}
-.lb-bug.sitting{animation:lbBob 3s ease-in-out infinite}
+.lb-bug.sitting .lb-wing-l,.lb-bug.sitting .lb-wing-r{animation:none;transform:rotate(0) scaleX(1);transition:transform 0.3s}
+.lb-bug.sitting .lb-shell{opacity:1;transition:opacity 0.3s}
+.lb-bug.sitting{animation:lbBob 3.5s ease-in-out infinite}
 @keyframes lbBob{
   0%,100%{transform:translateY(0) rotate(0)}
   50%{transform:translateY(-2px) rotate(1.5deg)}
@@ -1653,7 +1654,7 @@ export default function HomePage() {
             <div key={i} className="lb-tulip-stem" style={{
               top: vy - 80,
               position: 'fixed',
-              left: i % 2 === 0 ? 4 : 10,
+              left: i % 2 === 0 ? 14 : 20,
               opacity: activeTulip === i ? 1 : 0.5,
               transition: 'opacity 0.6s',
               transform: i % 2 === 0 ? 'rotate(-3deg)' : 'rotate(4deg)',
