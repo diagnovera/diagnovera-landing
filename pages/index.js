@@ -1505,13 +1505,9 @@ const ladybugCSS = `
 .lb-bug.flying .lb-shell{opacity:0}
 .lb-bug.flying .lb-wing-l{animation:lbFlutterL 0.18s ease-in-out infinite}
 .lb-bug.flying .lb-wing-r{animation:lbFlutterR 0.18s ease-in-out infinite}
-.lb-bug.sitting .lb-wing-l,.lb-bug.sitting .lb-wing-r{animation:none;transform:rotate(0) scaleX(1);transition:transform 0.3s}
-.lb-bug.sitting .lb-shell{opacity:1;transition:opacity 0.3s}
-.lb-bug.sitting{animation:lbBob 3.5s ease-in-out infinite}
-@keyframes lbBob{
-  0%,100%{transform:translateY(0) rotate(0)}
-  50%{transform:translateY(-2px) rotate(1.5deg)}
-}
+.lb-bug.sitting .lb-wing-l,.lb-bug.sitting .lb-wing-r{animation:none !important;transform:rotate(0) scaleX(1) !important;transition:transform 0.3s}
+.lb-bug.sitting .lb-shell{opacity:1 !important;transition:opacity 0.3s}
+.lb-bug.sitting{animation:none !important}
 @keyframes lbFlutterL{
   0%,100%{transform:rotate(-18deg) scaleX(1.3)}
   50%{transform:rotate(-35deg) scaleX(1.45)}
