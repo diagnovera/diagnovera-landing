@@ -1520,111 +1520,150 @@ const overrideCSS = `
 `;
 
 const ladybugCSS = `
-/* ── S-PATH LADYBUG ── */
-.lb-bug{position:fixed;z-index:500;pointer-events:none;transition:left 0.35s ease-out,top 0.35s ease-out;will-change:transform,left,top}
+/* ── LEFT PANEL: TULIP GARDEN + LADYBUG ── */
+.lb-garden{
+  position:fixed;left:0;top:0;bottom:0;width:52px;z-index:490;
+  pointer-events:none;overflow:visible;
+}
+@media(max-width:900px){.lb-garden{display:none}}
+.lb-tulip-stem{position:absolute;left:18px;width:36px}
+.lb-bug{
+  position:fixed;left:14px;z-index:500;pointer-events:none;
+  transition:top 1.4s cubic-bezier(0.25,0.1,0.25,1);
+  will-change:top;
+}
 .lb-bug.flying .lb-shell{opacity:0}
-.lb-bug.flying .lb-wing-l{animation:lbFlutterL 0.14s ease-in-out infinite}
-.lb-bug.flying .lb-wing-r{animation:lbFlutterR 0.14s ease-in-out infinite}
+.lb-bug.flying .lb-wing-l{animation:lbFlutterL 0.18s ease-in-out infinite}
+.lb-bug.flying .lb-wing-r{animation:lbFlutterR 0.18s ease-in-out infinite}
 .lb-bug.sitting .lb-wing-l,.lb-bug.sitting .lb-wing-r{animation:none;transform:rotate(0) scaleX(1)}
-.lb-bug.sitting{animation:lbBob 2.8s ease-in-out infinite}
+.lb-bug.sitting{animation:lbBob 3s ease-in-out infinite}
 @keyframes lbBob{
   0%,100%{transform:translateY(0) rotate(0)}
-  50%{transform:translateY(-3px) rotate(2deg)}
+  50%{transform:translateY(-2px) rotate(1.5deg)}
 }
 @keyframes lbFlutterL{
-  0%,100%{transform:rotate(-22deg) scaleX(1.35)}
-  50%{transform:rotate(-42deg) scaleX(1.5)}
+  0%,100%{transform:rotate(-18deg) scaleX(1.3)}
+  50%{transform:rotate(-35deg) scaleX(1.45)}
 }
 @keyframes lbFlutterR{
-  0%,100%{transform:rotate(22deg) scaleX(1.35)}
-  50%{transform:rotate(42deg) scaleX(1.5)}
+  0%,100%{transform:rotate(18deg) scaleX(1.3)}
+  50%{transform:rotate(35deg) scaleX(1.45)}
 }
 `;
+
+// Tulip colors — each flower gets a unique palette
+const TULIP_PALETTES = [
+  { p1:'#c41830', p2:'#e83050', p3:'#a01028', hi:'rgba(255,200,200,0.45)' },
+  { p1:'#d64080', p2:'#e860a0', p3:'#b02060', hi:'rgba(255,200,230,0.40)' },
+  { p1:'#f5e050', p2:'#f8ec80', p3:'#d0b820', hi:'rgba(255,255,220,0.50)' },
+  { p1:'#e8e8f0', p2:'#ffffff', p3:'#c8c8d8', hi:'rgba(255,255,255,0.60)' },
+  { p1:'#8030b0', p2:'#a050d0', p3:'#602088', hi:'rgba(220,180,255,0.40)' },
+  { p1:'#e85830', p2:'#f07850', p3:'#c04020', hi:'rgba(255,200,180,0.45)' },
+  { p1:'#d42050', p2:'#e84070', p3:'#b01840', hi:'rgba(255,180,200,0.40)' },
+];
+
+// Realistic tulip SVG — layered cupped petals, stem, leaf
+function Tulip({ palette, flip }) {
+  const { p1, p2, p3, hi } = palette;
+  const sc = flip ? 'scale(-1,1) translate(-36,0)' : '';
+  return (
+    <svg width="36" height="90" viewBox="0 0 36 90" xmlns="http://www.w3.org/2000/svg" style={{display:'block'}}>
+      <g transform={sc}>
+        {/* Stem — gentle curve */}
+        <path d="M18,90 C17,75 15,60 16,42" stroke="#3a7a2a" strokeWidth="2.2" fill="none" strokeLinecap="round"/>
+        {/* Leaf */}
+        <path d="M16,68 C6,60 1,48 4,36 C6,46 10,58 16,68Z" fill="#4a9038" opacity="0.85"/>
+        <path d="M16,68 C7,61 2,49 5,38" stroke="#2e6820" strokeWidth="0.6" fill="none"/>
+        {/* Calyx */}
+        <path d="M11,42 C13,38 16,36 18,36 C20,36 23,38 25,42 C21,40 15,40 11,42Z" fill="#3a7a2a"/>
+        {/* Back petals — deeper color, slightly spread */}
+        <path d="M10,42 C7,32 8,18 11,8 C13,16 12,30 13,42Z" fill={p3} opacity="0.7"/>
+        <path d="M26,42 C29,32 28,18 25,8 C23,16 24,30 23,42Z" fill={p3} opacity="0.7"/>
+        {/* Mid petals */}
+        <path d="M12,42 C9,30 9,16 12,5 C14,14 13,28 14,42Z" fill={p1}/>
+        <path d="M24,42 C27,30 27,16 24,5 C22,14 23,28 22,42Z" fill={p1}/>
+        {/* Front center petal — cupped shape */}
+        <path d="M18,42 C14,38 11,26 13,10 C15,18 17,28 18,42Z" fill={p2}/>
+        <path d="M18,42 C22,38 25,26 23,10 C21,18 19,28 18,42Z" fill={p2}/>
+        {/* Inner glow / highlight */}
+        <path d="M16,28 C17,20 18,14 18,10 C18,14 19,20 20,28Z" fill={hi}/>
+        {/* Petal edge detail */}
+        <path d="M13,10 C15,6 17,4 18,3 C19,4 21,6 23,10" fill="none" stroke={p3} strokeWidth="0.5" opacity="0.5"/>
+      </g>
+    </svg>
+  );
+}
 
 export default function HomePage() {
   const landingRef = useRef(null);
   const scrollTimer = useRef(null);
-  const waypointsRef = useRef([]);  // [{x, y}] — absolute document positions
-  const [bugPos, setBugPos] = useState({ x: -100, y: -100 });
+  const absYs = useRef([]);            // absolute Y positions of section gaps
+  const [viewYs, setViewYs] = useState([]); // viewport-relative Y for each tulip
+  const [activeTulip, setActiveTulip] = useState(0);
+  const [bugY, setBugY] = useState(-100);
   const [isFlying, setIsFlying] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
 
-  // Compute waypoints at the GAPS between real page sections, alternating left/right margin
+  // Compute absolute tulip positions (section boundaries)
   useEffect(() => {
     if (!mounted) return;
-    function computeWaypoints() {
+    function compute() {
       const el = landingRef.current;
       if (!el) return;
       const sections = el.querySelectorAll('.section, .stat-strip, .claude-strip, footer');
       if (sections.length < 2) return;
-      const vw = window.innerWidth;
-      const xLeft = 28;
-      const xRight = vw - 28;
-      const pts = [];
-      // First waypoint: just above the first section, right margin
-      const firstR = sections[0].getBoundingClientRect();
-      pts.push({ x: xRight, y: window.scrollY + firstR.top - 30 });
-      // Waypoint at each gap between consecutive sections
+      const positions = [];
       for (let i = 0; i < sections.length - 1; i++) {
         const r1 = sections[i].getBoundingClientRect();
         const r2 = sections[i + 1].getBoundingClientRect();
-        const gapY = window.scrollY + (r1.bottom + r2.top) / 2;
-        const x = (i % 2 === 0) ? xLeft : xRight;
-        pts.push({ x, y: gapY });
+        positions.push(window.scrollY + (r1.bottom + r2.top) / 2);
       }
-      // Last waypoint: just below the last section
-      const lastR = sections[sections.length - 1].getBoundingClientRect();
-      pts.push({ x: (sections.length % 2 === 0) ? xLeft : xRight, y: window.scrollY + lastR.bottom + 30 });
-      waypointsRef.current = pts;
+      absYs.current = positions;
+      updateView(positions);
     }
-    setTimeout(computeWaypoints, 600);
-    window.addEventListener('resize', computeWaypoints);
-    return () => window.removeEventListener('resize', computeWaypoints);
+    function updateView(pos) {
+      const sy = window.scrollY;
+      setViewYs(pos.map(y => y - sy));
+    }
+    setTimeout(compute, 600);
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
   }, [mounted]);
 
-  // Scroll handler: interpolate ladybug position between waypoints
+  // Scroll: find nearest tulip, update positions
   useEffect(() => {
-    if (!mounted) return;
-
-    function update() {
-      const wps = waypointsRef.current;
-      if (wps.length < 2) return;
-      const scrollY = window.scrollY;
-      const viewCenter = scrollY + window.innerHeight / 2;
-      // Find which two waypoints the viewport center is between
-      let idx = 0;
-      for (let i = 0; i < wps.length - 1; i++) {
-        if (viewCenter >= wps[i].y) idx = i;
-      }
-      const next = Math.min(idx + 1, wps.length - 1);
-      // Interpolate
-      const segLen = wps[next].y - wps[idx].y;
-      const t = segLen > 0 ? Math.min(1, Math.max(0, (viewCenter - wps[idx].y) / segLen)) : 0;
-      // Smooth ease in-out
-      const ease = t * t * (3 - 2 * t);
-      const x = wps[idx].x + (wps[next].x - wps[idx].x) * ease;
-      const y = wps[idx].y + (wps[next].y - wps[idx].y) * ease;
-      setBugPos({ x, y: y - scrollY });
-    }
+    if (!mounted || absYs.current.length === 0) return;
 
     function onScroll() {
+      const pos = absYs.current;
+      if (pos.length === 0) return;
       if (!isFlying) setIsFlying(true);
-      update();
+
+      const sy = window.scrollY;
+      const viewCenter = sy + window.innerHeight / 2;
+      let nearest = 0, minDist = Infinity;
+      pos.forEach((y, i) => {
+        const d = Math.abs(y - viewCenter);
+        if (d < minDist) { minDist = d; nearest = i; }
+      });
+      setActiveTulip(nearest);
+      setBugY(pos[nearest] - sy - 38);
+      setViewYs(pos.map(y => y - sy));
+
       clearTimeout(scrollTimer.current);
-      scrollTimer.current = setTimeout(() => setIsFlying(false), 400);
+      scrollTimer.current = setTimeout(() => setIsFlying(false), 500);
     }
 
-    setTimeout(update, 700);
+    // Initial
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', update);
     return () => {
       window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', update);
       clearTimeout(scrollTimer.current);
     };
-  }, [mounted, isFlying]);
+  }, [mounted, absYs.current.length, isFlying]);
 
   return (
     <>
@@ -1637,49 +1676,61 @@ export default function HomePage() {
       <style dangerouslySetInnerHTML={{ __html: landingCSS + overrideCSS + ladybugCSS }} />
       <div ref={landingRef} className="diagnovera-landing" dangerouslySetInnerHTML={{ __html: landingBody }} />
 
-      {/* Scroll-driven ladybug — follows gaps between sections */}
-      {mounted && <div
-        className={'lb-bug ' + (isFlying ? 'flying' : 'sitting')}
-        style={{ position:'fixed', left: bugPos.x - 18, top: bugPos.y - 18, zIndex:500, pointerEvents:'none' }}
-      >
-        <svg width="36" height="36" viewBox="-24 -34 48 52" xmlns="http://www.w3.org/2000/svg">
-          {/* Left wing */}
-          <ellipse className="lb-wing-l" cx="-6" cy="0" rx="12" ry="10" fill="#d42010" style={{transformOrigin:'0px 0px'}} />
-          {/* Right wing */}
-          <ellipse className="lb-wing-r" cx="6" cy="0" rx="12" ry="10" fill="#d42010" style={{transformOrigin:'0px 0px'}} />
-          {/* Dark body */}
-          <ellipse cx="0" cy="0" rx="6" ry="9" fill="#1a0800" />
-          {/* Shell */}
-          <ellipse className="lb-shell" cx="0" cy="0" rx="13" ry="11" fill="#d42010" />
-          <ellipse cx="-3.5" cy="-4" rx="5" ry="3.5" fill="rgba(255,120,100,0.45)" />
-          <line x1="0" y1="-11" x2="0" y2="11" stroke="#1a0800" strokeWidth="1.4" />
-          {/* Spots */}
-          <circle cx="-4.5" cy="-3.5" r="2.5" fill="#1a0800" />
-          <circle cx="-5" cy="3" r="2" fill="#1a0800" />
-          <circle cx="4.5" cy="-3.5" r="2.5" fill="#1a0800" />
-          <circle cx="5" cy="3" r="2" fill="#1a0800" />
-          {/* Head */}
-          <ellipse cx="0" cy="-13" rx="7" ry="6" fill="#1a0800" />
-          <circle cx="-3.5" cy="-14" r="2.2" fill="white" />
-          <circle cx="3.5" cy="-14" r="2.2" fill="white" />
-          <circle cx="-3" cy="-14" r="1.2" fill="#1a0800" />
-          <circle cx="3.5" cy="-14" r="1.2" fill="#1a0800" />
-          <circle cx="-2.5" cy="-14.8" r="0.5" fill="white" />
-          <circle cx="4" cy="-14.8" r="0.5" fill="white" />
-          {/* Antennae */}
-          <path d="M-3,-18 C-5,-24 -8,-28 -10,-30" fill="none" stroke="#1a0800" strokeWidth="1.2" strokeLinecap="round" />
-          <circle cx="-10" cy="-30" r="1.5" fill="#1a0800" />
-          <path d="M3,-18 C5,-24 8,-28 10,-30" fill="none" stroke="#1a0800" strokeWidth="1.2" strokeLinecap="round" />
-          <circle cx="10" cy="-30" r="1.5" fill="#1a0800" />
-          {/* Legs */}
-          <g className="lb-legs">
-            <path d="M-12,-2 C-18,-4 -20,-2 -18,0" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
-            <path d="M-12,4 C-18,4 -20,6 -18,8" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
-            <path d="M12,-2 C18,-4 20,-2 18,0" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
-            <path d="M12,4 C18,4 20,6 18,8" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
-          </g>
-        </svg>
-      </div>}
+      {/* Left panel: tulip garden */}
+      {mounted && viewYs.length > 0 && (
+        <div className="lb-garden">
+          {viewYs.map((vy, i) => (
+            <div key={i} className="lb-tulip-stem" style={{
+              top: vy - 60,
+              position: 'fixed',
+              left: i % 2 === 0 ? 6 : 16,
+              opacity: activeTulip === i ? 1 : 0.5,
+              transition: 'opacity 0.6s',
+              transform: i % 2 === 0 ? 'none' : 'rotate(5deg)',
+            }}>
+              <Tulip palette={TULIP_PALETTES[i % TULIP_PALETTES.length]} flip={i % 2 !== 0} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Ladybug — fixed in left panel, flies between tulips */}
+      {mounted && (
+        <div
+          className={'lb-bug ' + (isFlying ? 'flying' : 'sitting')}
+          style={{ top: bugY }}
+        >
+          <svg width="28" height="28" viewBox="-24 -34 48 52" xmlns="http://www.w3.org/2000/svg">
+            <ellipse className="lb-wing-l" cx="-6" cy="0" rx="12" ry="10" fill="#d42010" style={{transformOrigin:'0px 0px'}} />
+            <ellipse className="lb-wing-r" cx="6" cy="0" rx="12" ry="10" fill="#d42010" style={{transformOrigin:'0px 0px'}} />
+            <ellipse cx="0" cy="0" rx="6" ry="9" fill="#1a0800" />
+            <ellipse className="lb-shell" cx="0" cy="0" rx="13" ry="11" fill="#d42010" />
+            <ellipse cx="-3.5" cy="-4" rx="5" ry="3.5" fill="rgba(255,120,100,0.45)" />
+            <line x1="0" y1="-11" x2="0" y2="11" stroke="#1a0800" strokeWidth="1.4" />
+            <circle cx="-4.5" cy="-3.5" r="2.5" fill="#1a0800" />
+            <circle cx="-5" cy="3" r="2" fill="#1a0800" />
+            <circle cx="4.5" cy="-3.5" r="2.5" fill="#1a0800" />
+            <circle cx="5" cy="3" r="2" fill="#1a0800" />
+            <ellipse cx="0" cy="-13" rx="7" ry="6" fill="#1a0800" />
+            <circle cx="-3.5" cy="-14" r="2.2" fill="white" />
+            <circle cx="3.5" cy="-14" r="2.2" fill="white" />
+            <circle cx="-3" cy="-14" r="1.2" fill="#1a0800" />
+            <circle cx="3.5" cy="-14" r="1.2" fill="#1a0800" />
+            <circle cx="-2.5" cy="-14.8" r="0.5" fill="white" />
+            <circle cx="4" cy="-14.8" r="0.5" fill="white" />
+            <path d="M-3,-18 C-5,-24 -8,-28 -10,-30" fill="none" stroke="#1a0800" strokeWidth="1.2" strokeLinecap="round" />
+            <circle cx="-10" cy="-30" r="1.5" fill="#1a0800" />
+            <path d="M3,-18 C5,-24 8,-28 10,-30" fill="none" stroke="#1a0800" strokeWidth="1.2" strokeLinecap="round" />
+            <circle cx="10" cy="-30" r="1.5" fill="#1a0800" />
+            <g className="lb-legs">
+              <path d="M-12,-2 C-18,-4 -20,-2 -18,0" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
+              <path d="M-12,4 C-18,4 -20,6 -18,8" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
+              <path d="M12,-2 C18,-4 20,-2 18,0" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
+              <path d="M12,4 C18,4 20,6 18,8" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
+            </g>
+          </svg>
+        </div>
+      )}
     </>
   );
 }
