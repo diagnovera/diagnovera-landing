@@ -1513,10 +1513,7 @@ const overrideCSS = `
 
 const ladybugCSS = `
 /* ── S-PATH LADYBUG ── */
-.lb-path-container{position:fixed;top:0;left:0;width:100%;height:100%;z-index:497;pointer-events:none}
-.lb-path-container svg{width:100%;height:100%}
-.lb-path-line{fill:none;stroke:rgba(212,32,16,0.06);stroke-width:2;stroke-dasharray:8 6}
-.lb-bug{position:fixed;z-index:500;pointer-events:none;transition:transform 0.1s linear;will-change:transform,left,top}
+.lb-bug{position:fixed;z-index:500;pointer-events:none;transition:left 0.35s ease-out,top 0.35s ease-out;will-change:transform,left,top}
 .lb-bug.flying .lb-shell{opacity:0}
 .lb-bug.flying .lb-wing-l{animation:lbFlutterL 0.14s ease-in-out infinite}
 .lb-bug.flying .lb-wing-r{animation:lbFlutterR 0.14s ease-in-out infinite}
@@ -1537,31 +1534,71 @@ const ladybugCSS = `
 `;
 
 export default function HomePage() {
-  const pathRef = useRef(null);
   const landingRef = useRef(null);
   const scrollTimer = useRef(null);
+  const waypointsRef = useRef([]);  // [{x, y}] — absolute document positions
   const [bugPos, setBugPos] = useState({ x: -100, y: -100 });
   const [isFlying, setIsFlying] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
 
-  // S-path ladybug: compute position along path based on scroll
+  // Compute waypoints at the GAPS between real page sections, alternating left/right margin
   useEffect(() => {
     if (!mounted) return;
-    const path = pathRef.current;
-    if (!path) return;
+    function computeWaypoints() {
+      const el = landingRef.current;
+      if (!el) return;
+      const sections = el.querySelectorAll('.section, .stat-strip, .claude-strip, footer');
+      if (sections.length < 2) return;
+      const vw = window.innerWidth;
+      const xLeft = 28;
+      const xRight = vw - 28;
+      const pts = [];
+      // First waypoint: just above the first section, right margin
+      const firstR = sections[0].getBoundingClientRect();
+      pts.push({ x: xRight, y: window.scrollY + firstR.top - 30 });
+      // Waypoint at each gap between consecutive sections
+      for (let i = 0; i < sections.length - 1; i++) {
+        const r1 = sections[i].getBoundingClientRect();
+        const r2 = sections[i + 1].getBoundingClientRect();
+        const gapY = window.scrollY + (r1.bottom + r2.top) / 2;
+        const x = (i % 2 === 0) ? xLeft : xRight;
+        pts.push({ x, y: gapY });
+      }
+      // Last waypoint: just below the last section
+      const lastR = sections[sections.length - 1].getBoundingClientRect();
+      pts.push({ x: (sections.length % 2 === 0) ? xLeft : xRight, y: window.scrollY + lastR.bottom + 30 });
+      waypointsRef.current = pts;
+    }
+    setTimeout(computeWaypoints, 600);
+    window.addEventListener('resize', computeWaypoints);
+    return () => window.removeEventListener('resize', computeWaypoints);
+  }, [mounted]);
+
+  // Scroll handler: interpolate ladybug position between waypoints
+  useEffect(() => {
+    if (!mounted) return;
 
     function update() {
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (docHeight <= 0) return;
-      const progress = Math.min(1, Math.max(0, window.scrollY / docHeight));
-      const totalLen = path.getTotalLength();
-      const pt = path.getPointAtLength(progress * totalLen);
-      // Convert SVG user-space (0-1000 x, 0-2000 y) to viewport pixels
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      setBugPos({ x: (pt.x / 1000) * vw, y: (pt.y / 2000) * vh });
+      const wps = waypointsRef.current;
+      if (wps.length < 2) return;
+      const scrollY = window.scrollY;
+      const viewCenter = scrollY + window.innerHeight / 2;
+      // Find which two waypoints the viewport center is between
+      let idx = 0;
+      for (let i = 0; i < wps.length - 1; i++) {
+        if (viewCenter >= wps[i].y) idx = i;
+      }
+      const next = Math.min(idx + 1, wps.length - 1);
+      // Interpolate
+      const segLen = wps[next].y - wps[idx].y;
+      const t = segLen > 0 ? Math.min(1, Math.max(0, (viewCenter - wps[idx].y) / segLen)) : 0;
+      // Smooth ease in-out
+      const ease = t * t * (3 - 2 * t);
+      const x = wps[idx].x + (wps[next].x - wps[idx].x) * ease;
+      const y = wps[idx].y + (wps[next].y - wps[idx].y) * ease;
+      setBugPos({ x, y: y - scrollY });
     }
 
     function onScroll() {
@@ -1571,8 +1608,7 @@ export default function HomePage() {
       scrollTimer.current = setTimeout(() => setIsFlying(false), 400);
     }
 
-    // Initial position
-    setTimeout(update, 600);
+    setTimeout(update, 700);
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', update);
     return () => {
@@ -1593,35 +1629,7 @@ export default function HomePage() {
       <style dangerouslySetInnerHTML={{ __html: landingCSS + overrideCSS + ladybugCSS }} />
       <div ref={landingRef} className="diagnovera-landing" dangerouslySetInnerHTML={{ __html: landingBody }} />
 
-      {/* Hidden SVG with S-shaped flight path */}
-      {mounted && (
-        <svg viewBox="0 0 1000 2000" preserveAspectRatio="none" style={{ position:'fixed',top:0,left:0,width:'100vw',height:'100vh',zIndex:497,pointerEvents:'none' }}>
-          <path
-            ref={pathRef}
-            d={
-              'M 940,20 ' +
-              'C 960,100 970,180 950,250 ' +
-              'S 920,320 60,400 ' +
-              'C 30,440 20,500 40,560 ' +
-              'S 70,620 950,700 ' +
-              'C 970,750 980,820 960,880 ' +
-              'S 930,940 50,1020 ' +
-              'C 25,1070 20,1140 40,1200 ' +
-              'S 60,1260 940,1340 ' +
-              'C 965,1400 970,1460 955,1520 ' +
-              'S 930,1580 55,1660 ' +
-              'C 30,1720 20,1780 40,1840 ' +
-              'S 60,1900 950,1980'
-            }
-            fill="none"
-            stroke="rgba(212,32,16,0.03)"
-            strokeWidth="1.5"
-            strokeDasharray="6 8"
-          />
-        </svg>
-      )}
-
-      {/* Scroll-driven ladybug */}
+      {/* Scroll-driven ladybug — follows gaps between sections */}
       {mounted && <div
         className={'lb-bug ' + (isFlying ? 'flying' : 'sitting')}
         style={{ position:'fixed', left: bugPos.x - 18, top: bugPos.y - 18, zIndex:500, pointerEvents:'none' }}
