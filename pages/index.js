@@ -260,8 +260,10 @@ nav{
   font-family:'Playfair Display',Georgia,serif;
   font-size:120px;font-weight:900;color:rgba(2,136,209,0.08);line-height:1;
 }
-.qt{font-family:'Playfair Display',Georgia,serif;font-size:19px;font-style:italic;color:var(--ink);line-height:1.62;padding-left:8px;margin-bottom:16px}
-.qa{font-size:12px;color:var(--ink3);font-weight:600;letter-spacing:.3px}
+.qt-title{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:900;color:var(--blue);margin-bottom:14px;padding-left:8px;letter-spacing:-.3px}
+.qt{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-style:italic;color:var(--ink);line-height:1.68;padding-left:8px;margin-bottom:12px}
+.qt-emphasis{font-family:'Playfair Display',Georgia,serif;font-size:19px;font-style:italic;color:var(--blue2);line-height:2.0;padding-left:8px;margin:16px 0;font-weight:600}
+.qa{font-size:12px;color:var(--ink3);font-weight:600;letter-spacing:.3px;margin-top:18px}
 .quote-lb{position:absolute;bottom:18px;right:24px}
 
 /* ── STAKE ROW ── */
@@ -1129,7 +1131,13 @@ const landingBody = `<!-- NAV -->
 
     <!-- Founder quote with ladybug accent -->
     <div class="quote-panel">
-      <p class="qt">At the heart of every diagnostic algorithm is a patient who deserves our best. In an age of ever-increasing clinical complexity, physician judgment is most powerful when it is supported by diagnostic accuracy that misses nothing. I built DiagnoVera because I believe AI will be essential and indispensable in medicine &mdash; and it is equally important to have a firm understanding of both its extraordinary rewards and its potential pitfalls. When a nephrologist can see 165 clinical variables analyzed in seconds, with a verified diagnosis and a complete note ready to sign, they gain something precious: time to listen, time to explain, time to be present with their patient. DiagnoVera seeks to solve these challenges &mdash; to bring a highly advanced, world-class platform that bears these aspirations to fruit, amplifying the physician&rsquo;s ability to care rather than replacing it. That is what better medicine looks like.</p>
+      <div class="qt-title">The DiagnoVera Vision</div>
+      <p class="qt">At the heart of every diagnostic algorithm is a patient who deserves our absolute best. In an age of ever-increasing clinical complexity, physician judgment is most powerful when it is fortified by a level of diagnostic accuracy that leaves nothing to chance.</p>
+      <p class="qt">I built DiagnoVera because I believe AI will become an indispensable pillar of modern medicine &mdash; and it is equally vital to have a firm, ethical understanding of both its extraordinary rewards and its potential pitfalls.</p>
+      <p class="qt">When a nephrologist can see 165 clinical variables synthesized in seconds, they are provided with a verified diagnostic foundation and the essential substrate for highly accurate documentation. In this clarity, they gain something precious:</p>
+      <p class="qt-emphasis">Time to listen. &ensp;&middot;&ensp; Time to explain. &ensp;&middot;&ensp; Time to be fully present with their patient.</p>
+      <p class="qt">DiagnoVera seeks to solve the modern clinical burden by delivering a sophisticated, world-class platform that brings these aspirations to fruition. Our goal is to amplify the physician&rsquo;s ability to care, rather than replace it.</p>
+      <p class="qt" style="font-weight:600;color:var(--blue2)">That is what better medicine looks like.</p>
       <div class="qa">Dr. Mehrdad Ghahremani-Ghajar, DO &mdash; Nephrologist &middot; Founder &amp; CMO, DiagnoVera</div>
       <div class="quote-lb">
         <svg width="52" height="52" viewBox="-20 -26 40 44" xmlns="http://www.w3.org/2000/svg">
