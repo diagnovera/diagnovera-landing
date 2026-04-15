@@ -1606,7 +1606,7 @@ export default function HomePage() {
     function onScroll() {
       const pos = absYs.current;
       if (pos.length === 0) return;
-      if (!isFlying) setIsFlying(true);
+      setIsFlying(true);
 
       const sy = window.scrollY;
       const viewCenter = sy + window.innerHeight / 2;
@@ -1623,14 +1623,27 @@ export default function HomePage() {
       scrollTimer.current = setTimeout(() => setIsFlying(false), 500);
     }
 
-    // Initial
-    onScroll();
+    // Set initial position without triggering flying state
+    const pos = absYs.current;
+    if (pos.length > 0) {
+      const sy = window.scrollY;
+      const viewCenter = sy + window.innerHeight / 2;
+      let nearest = 0, minDist = Infinity;
+      pos.forEach((y, i) => {
+        const d = Math.abs(y - viewCenter);
+        if (d < minDist) { minDist = d; nearest = i; }
+      });
+      setActiveTulip(nearest);
+      setBugY(pos[nearest] - sy - 38);
+      setViewYs(pos.map(y => y - sy));
+    }
+
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', onScroll);
       clearTimeout(scrollTimer.current);
     };
-  }, [mounted, absYs.current.length, isFlying]);
+  }, [mounted, absYs.current.length]);
 
   return (
     <>
