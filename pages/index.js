@@ -1620,7 +1620,7 @@ export default function HomePage() {
       setViewYs(pos.map(y => y - sy));
 
       clearTimeout(scrollTimer.current);
-      scrollTimer.current = setTimeout(() => setIsFlying(false), 500);
+      scrollTimer.current = setTimeout(() => setIsFlying(false), 1800);
     }
 
     // Set initial position without triggering flying state
