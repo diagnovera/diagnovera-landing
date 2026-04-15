@@ -2,7 +2,7 @@
 // DiagnoVera Landing Page — Vercel deployment
 // Login links point to Cloud Run backend
 import Head from 'next/head';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const landingCSS = `
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -1638,97 +1638,161 @@ const overrideCSS = `
 `;
 
 const ladybugCSS = `
-/* Animated Ladybug — sits on right edge, never covers content */
-.lb-wrap{position:fixed;bottom:80px;left:60px;z-index:500;pointer-events:none;transition:opacity 0.5s}
-.lb-mover{position:relative;width:48px;height:48px}
-/* After landing, switch to right-side tulip perch */
-.lb-wrap.lb-landed{left:auto;right:18px;bottom:auto;top:50%;margin-top:-40px}
+/* ── SCROLL-DRIVEN LADYBUG WITH SECTION TULIPS ── */
 
-/* Small tulip decoration on right edge for the ladybug to sit on */
-.lb-tulip{position:fixed;right:6px;top:50%;margin-top:-10px;z-index:499;opacity:0;transition:opacity 0.8s}
-.lb-tulip.visible{opacity:1}
+/* Tulip markers along the right edge, one per section */
+.lb-tulip-rail{position:fixed;right:12px;top:0;bottom:0;z-index:498;pointer-events:none;width:40px}
+.lb-tulip-mark{position:absolute;right:0;opacity:0.7;transition:opacity 0.4s,transform 0.4s}
+.lb-tulip-mark.active{opacity:1;transform:scale(1.1)}
 
-@keyframes lbCrawl{
-  0%{transform:translate(0,0) rotate(0)}
-  30%{transform:translate(70px,-6px) rotate(2deg)}
-  60%{transform:translate(130px,-2px) rotate(-1deg)}
-  100%{transform:translate(180px,0) rotate(0)}
+/* The ladybug — fixed position, moves smoothly */
+.lb-bug{
+  position:fixed;right:20px;z-index:500;pointer-events:none;
+  transition:top 0.8s cubic-bezier(0.34,1.2,0.64,1),transform 0.3s;
+  will-change:top,transform;
 }
-@keyframes lbLegWiggle{
-  0%,100%{transform:rotate(0)}25%{transform:rotate(10deg)}75%{transform:rotate(-10deg)}
+.lb-bug.flying .lb-shell{opacity:0}
+.lb-bug.flying .lb-wing-l{animation:lbFlutterL 0.14s ease-in-out infinite}
+.lb-bug.flying .lb-wing-r{animation:lbFlutterR 0.14s ease-in-out infinite}
+.lb-bug.sitting .lb-wing-l,.lb-bug.sitting .lb-wing-r{animation:none;transform:rotate(0) scaleX(1)}
+.lb-bug.sitting{animation:lbBob 2.8s ease-in-out infinite}
+.lb-bug.sitting .lb-legs{animation:none}
+.lb-bug.flying .lb-legs{animation:none}
+
+/* Meander: slight horizontal sway while flying between sections */
+.lb-bug.flying{
+  animation:lbMeander 1.2s ease-in-out infinite alternate;
 }
-@keyframes lbWingL{
-  0%{transform:rotate(0) scaleX(1)}100%{transform:rotate(-35deg) scaleX(1.4)}
+
+@keyframes lbMeander{
+  0%{margin-right:0}
+  100%{margin-right:12px}
 }
-@keyframes lbWingR{
-  0%{transform:rotate(0) scaleX(1)}100%{transform:rotate(35deg) scaleX(1.4)}
+@keyframes lbBob{
+  0%,100%{transform:translateY(0) rotate(0)}
+  50%{transform:translateY(-3px) rotate(2deg)}
 }
 @keyframes lbFlutterL{
-  0%,100%{transform:rotate(-20deg) scaleX(1.4)}50%{transform:rotate(-45deg) scaleX(1.5)}
+  0%,100%{transform:rotate(-22deg) scaleX(1.35)}
+  50%{transform:rotate(-42deg) scaleX(1.5)}
 }
 @keyframes lbFlutterR{
-  0%,100%{transform:rotate(20deg) scaleX(1.4)}50%{transform:rotate(45deg) scaleX(1.5)}
-}
-@keyframes lbBobSide{
-  0%,100%{transform:scale(0.6) rotate(0)}
-  50%{transform:scale(0.6) rotate(3deg) translateY(-4px)}
+  0%,100%{transform:rotate(22deg) scaleX(1.35)}
+  50%{transform:rotate(42deg) scaleX(1.5)}
 }
 `;
 
+// Real tulip SVG — cup-shaped petals with stem and leaves
+function TulipSVG({ color = '#d42010', color2 = '#a01010' }) {
+  return (
+    <svg width="32" height="72" viewBox="0 0 32 72" xmlns="http://www.w3.org/2000/svg">
+      {/* Stem */}
+      <path d="M16,72 C15,58 14,46 16,32" stroke="#386828" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      {/* Left leaf */}
+      <path d="M16,52 C6,46 -1,36 3,26 C5,34 10,44 16,52Z" fill="#4a8038" stroke="#2e5820" strokeWidth="0.5"/>
+      {/* Right leaf */}
+      <path d="M16,44 C26,38 33,28 29,18 C27,26 22,36 16,44Z" fill="#528840" stroke="#2e5820" strokeWidth="0.5"/>
+      {/* Sepal base */}
+      <path d="M10,32 C12,28 16,26 16,26 C16,26 20,28 22,32 C18,30 14,30 10,32Z" fill="#386828"/>
+      {/* Back petals */}
+      <path d="M14,30 C8,28 3,18 5,8 C7,14 10,22 14,30Z" fill={color2} transform="rotate(-8,14,30)"/>
+      <path d="M18,30 C24,28 29,18 27,8 C25,14 22,22 18,30Z" fill={color2} transform="rotate(8,18,30)"/>
+      {/* Mid petals */}
+      <path d="M15,30 C9,27 5,16 7,6 C9,13 12,22 15,30Z" fill={color} transform="rotate(-3,15,30)"/>
+      <path d="M17,30 C23,27 27,16 25,6 C23,13 20,22 17,30Z" fill={color} transform="rotate(3,17,30)"/>
+      {/* Front center petal */}
+      <path d="M16,30 C10,28 7,18 9,6 C11,14 14,24 16,30 C18,24 21,14 23,6 C25,18 22,28 16,30Z" fill={color}/>
+      {/* Petal highlight */}
+      <path d="M14,18 C15,12 16,8 16,6 C16,8 17,12 18,18Z" fill="rgba(255,180,180,0.3)"/>
+    </svg>
+  );
+}
+
+// Section IDs that get tulips
+const SECTION_IDS = ['platform', 'lambda-dx', 'billing', 'telehealth', 'solutions', 'contact'];
+const TULIP_COLORS = [
+  { color: '#d42010', color2: '#a01010' },  // red
+  { color: '#d02468', color2: '#920a40' },  // pink
+  { color: '#460c12', color2: '#300608' },  // burgundy
+  { color: '#edf1f5', color2: '#ccd2d8' },  // white
+  { color: '#c82020', color2: '#8a1010' },  // crimson
+  { color: '#b01650', color2: '#8c0a38' },  // deep pink
+];
+
 export default function HomePage() {
-  const wrapRef = useRef(null);
-  const moverRef = useRef(null);
-  const wlRef = useRef(null);
-  const wrRef = useRef(null);
-  const legsRef = useRef(null);
-  const tulipRef = useRef(null);
+  // Absolute Y positions of sections (document-relative)
+  const sectionYs = useRef([]);
+  // Viewport-relative Y positions for rendering tulips
+  const [tulipViewYs, setTulipViewYs] = useState([]);
+  const [activeTulip, setActiveTulip] = useState(0);
+  const [isFlying, setIsFlying] = useState(false);
+  const [bugY, setBugY] = useState(200);
+  const [mounted, setMounted] = useState(false);
+  const scrollTimer = useRef(null);
+  const landingRef = useRef(null);
 
+  useEffect(() => { setMounted(true); }, []);
+
+  // On mount + resize: compute section Y positions (absolute)
   useEffect(() => {
-    const wrap = wrapRef.current, m = moverRef.current;
-    const wl = wlRef.current, wr = wrRef.current, legs = legsRef.current;
-    const tulip = tulipRef.current;
-    if (!wrap || !m) return;
-
-    // Phase 1: Crawl across bottom-left (0 → 6s)
-    m.style.animation = 'lbCrawl 6s ease-in-out forwards';
-    if (legs) legs.style.animation = 'lbLegWiggle 0.35s ease-in-out infinite';
-
-    // Phase 2: Stop crawling, open wings (6s → 7s)
-    const t1 = setTimeout(() => {
-      if (legs) legs.style.animation = 'none';
-      if (wl) { wl.style.transformOrigin = '13px 0'; wl.style.animation = 'lbWingL 0.8s ease-out forwards'; }
-      if (wr) { wr.style.transformOrigin = '-13px 0'; wr.style.animation = 'lbWingR 0.8s ease-out forwards'; }
-      // Show the tulip perch on the right
-      if (tulip) tulip.classList.add('visible');
-    }, 6000);
-
-    // Phase 3: Flutter wings + fly to right-side tulip (7s → 9.5s)
-    const t2 = setTimeout(() => {
-      if (wl) wl.style.animation = 'lbFlutterL 0.15s ease-in-out infinite';
-      if (wr) wr.style.animation = 'lbFlutterR 0.15s ease-in-out infinite';
-      // Fly: animate from current position to the right-side tulip
-      // Calculate target: right edge of viewport, vertically centered
-      const rect = wrap.getBoundingClientRect();
-      const targetX = window.innerWidth - 50 - rect.left;
-      const targetY = -(rect.bottom - window.innerHeight / 2) - 20;
-      m.style.transition = 'transform 2.5s ease-in-out';
-      m.style.transform = 'translate(' + targetX + 'px, ' + targetY + 'px) scale(0.6)';
-    }, 7000);
-
-    // Phase 4: Land on tulip, close wings, switch to right-side perch (9.5s+)
-    const t3 = setTimeout(() => {
-      // Close wings
-      if (wl) { wl.style.animation = 'none'; wl.style.transform = 'rotate(0) scaleX(1)'; wl.style.transition = 'transform 0.5s'; }
-      if (wr) { wr.style.animation = 'none'; wr.style.transform = 'rotate(0) scaleX(1)'; wr.style.transition = 'transform 0.5s'; }
-      // Reposition: remove old position, place on right side tulip
-      wrap.classList.add('lb-landed');
-      m.style.transition = 'none';
-      m.style.transform = 'scale(0.6)';
-      m.style.animation = 'lbBobSide 2.5s ease-in-out infinite';
-    }, 9500);
-
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    function computePositions() {
+      const el = landingRef.current;
+      if (!el) return;
+      const sections = el.querySelectorAll('.section, .stat-strip, .claude-strip, footer');
+      const positions = [];
+      sections.forEach((sec) => {
+        const rect = sec.getBoundingClientRect();
+        positions.push(rect.top + window.scrollY + rect.height / 2);
+      });
+      sectionYs.current = positions;
+      // Also update viewport positions immediately
+      updateViewPositions(positions);
+    }
+    function updateViewPositions(positions) {
+      const scroll = window.scrollY;
+      setTulipViewYs(positions.map(y => y - scroll));
+    }
+    setTimeout(computePositions, 500);
+    window.addEventListener('resize', computePositions);
+    return () => window.removeEventListener('resize', computePositions);
   }, []);
+
+  // Scroll handler: fly between tulips, track position, debounce landing
+  useEffect(() => {
+    const positions = sectionYs.current;
+    if (positions.length === 0 && tulipViewYs.length === 0) return;
+
+    function onScroll() {
+      const pos = sectionYs.current;
+      if (pos.length === 0) return;
+      if (!isFlying) setIsFlying(true);
+
+      const scroll = window.scrollY;
+      const viewCenter = scroll + window.innerHeight / 2;
+      let nearest = 0, minDist = Infinity;
+      pos.forEach((y, i) => {
+        const d = Math.abs(y - viewCenter);
+        if (d < minDist) { minDist = d; nearest = i; }
+      });
+      setActiveTulip(nearest);
+      setBugY(pos[nearest] - scroll);
+      setTulipViewYs(pos.map(y => y - scroll));
+
+      clearTimeout(scrollTimer.current);
+      scrollTimer.current = setTimeout(() => {
+        setIsFlying(false);
+      }, 400);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      clearTimeout(scrollTimer.current);
+    };
+  }, [tulipViewYs.length, isFlying]);
+
+  // Pick up to 6 tulips mapped to actual sections
+  const tulipCount = Math.min(tulipViewYs.length, TULIP_COLORS.length);
 
   return (
     <>
@@ -1739,67 +1803,66 @@ export default function HomePage() {
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
       </Head>
       <style dangerouslySetInnerHTML={{ __html: landingCSS + overrideCSS + ladybugCSS }} />
-      <div className="diagnovera-landing" dangerouslySetInnerHTML={{ __html: landingBody }} />
+      <div ref={landingRef} className="diagnovera-landing" dangerouslySetInnerHTML={{ __html: landingBody }} />
 
-      {/* Tulip perch on right edge — ladybug lands here */}
-      <div ref={tulipRef} className="lb-tulip">
-        <svg width="36" height="80" viewBox="0 0 36 80" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18,80 C17,60 16,45 18,30" stroke="#386828" strokeWidth="3" fill="none" strokeLinecap="round"/>
-          <path d="M18,42 C8,38 2,28 5,18 C7,24 12,32 18,42Z" fill="#4a8038"/>
-          <path d="M18,36 C28,32 34,22 31,12 C29,18 24,28 18,36Z" fill="#528840"/>
-          <path d="M10,18 C8,8 12,0 18,0 C24,0 28,8 26,18 C24,10 22,6 18,4 C14,6 12,10 10,18Z" fill="#d42010"/>
-          <line x1="18" y1="18" x2="18" y2="0" stroke="#1a0800" strokeWidth="0.8"/>
-          <circle cx="14" cy="10" r="1.8" fill="#1a0800"/>
-          <circle cx="22" cy="10" r="1.8" fill="#1a0800"/>
-          <circle cx="15" cy="15" r="1.3" fill="#1a0800"/>
-          <circle cx="21" cy="15" r="1.3" fill="#1a0800"/>
-        </svg>
-      </div>
-
-      {/* Animated Ladybug */}
-      <div ref={wrapRef} className="lb-wrap">
-        <div ref={moverRef} className="lb-mover">
-          <svg width="48" height="48" viewBox="-24 -34 48 52" xmlns="http://www.w3.org/2000/svg">
-            {/* Shadow */}
-            <ellipse cx="0" cy="14" rx="16" ry="4" fill="rgba(0,0,0,0.15)" />
-            {/* Left wing */}
-            <ellipse ref={wlRef} cx="-6" cy="0" rx="12" ry="10" fill="#d42010" style={{transformOrigin:'0px 0px'}} />
-            {/* Right wing */}
-            <ellipse ref={wrRef} cx="6" cy="0" rx="12" ry="10" fill="#d42010" style={{transformOrigin:'0px 0px'}} />
-            {/* Dark body (visible when wings open) */}
-            <ellipse cx="0" cy="0" rx="6" ry="9" fill="#1a0800" />
-            {/* Shell */}
-            <ellipse cx="0" cy="0" rx="13" ry="11" fill="#d42010" />
-            <ellipse cx="-3.5" cy="-4" rx="5" ry="3.5" fill="rgba(255,120,100,0.45)" />
-            <line x1="0" y1="-11" x2="0" y2="11" stroke="#1a0800" strokeWidth="1.4" />
-            {/* Spots */}
-            <circle cx="-4.5" cy="-3.5" r="2.5" fill="#1a0800" />
-            <circle cx="-5" cy="3" r="2" fill="#1a0800" />
-            <circle cx="4.5" cy="-3.5" r="2.5" fill="#1a0800" />
-            <circle cx="5" cy="3" r="2" fill="#1a0800" />
-            {/* Head */}
-            <ellipse cx="0" cy="-13" rx="7" ry="6" fill="#1a0800" />
-            <circle cx="-3.5" cy="-14" r="2.2" fill="white" />
-            <circle cx="3.5" cy="-14" r="2.2" fill="white" />
-            <circle cx="-3" cy="-14" r="1.2" fill="#1a0800" />
-            <circle cx="3.5" cy="-14" r="1.2" fill="#1a0800" />
-            <circle cx="-2.5" cy="-14.8" r="0.5" fill="white" />
-            <circle cx="4" cy="-14.8" r="0.5" fill="white" />
-            {/* Antennae */}
-            <path d="M-3,-18 C-5,-24 -8,-28 -10,-30" fill="none" stroke="#1a0800" strokeWidth="1.2" strokeLinecap="round" />
-            <circle cx="-10" cy="-30" r="1.5" fill="#1a0800" />
-            <path d="M3,-18 C5,-24 8,-28 10,-30" fill="none" stroke="#1a0800" strokeWidth="1.2" strokeLinecap="round" />
-            <circle cx="10" cy="-30" r="1.5" fill="#1a0800" />
-            {/* Legs */}
-            <g ref={legsRef}>
-              <path d="M-12,-2 C-18,-4 -20,-2 -18,0" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
-              <path d="M-12,4 C-18,4 -20,6 -18,8" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
-              <path d="M12,-2 C18,-4 20,-2 18,0" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
-              <path d="M12,4 C18,4 20,6 18,8" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
-            </g>
-          </svg>
+      {/* Tulip rail — one tulip per section along the right edge */}
+      {mounted && (
+        <div className="lb-tulip-rail">
+          {Array.from({ length: tulipCount }).map((_, i) => (
+            <div
+              key={i}
+              className={'lb-tulip-mark' + (activeTulip === i ? ' active' : '')}
+              style={{ top: (tulipViewYs[i] || 0) - 36 }}
+            >
+              <TulipSVG color={TULIP_COLORS[i].color} color2={TULIP_COLORS[i].color2} />
+            </div>
+          ))}
         </div>
-      </div>
+      )}
+
+      {/* Scroll-driven ladybug */}
+      {mounted && <div
+        className={'lb-bug ' + (isFlying ? 'flying' : 'sitting')}
+        style={{ top: bugY - 10 }}
+      >
+        <svg width="36" height="36" viewBox="-24 -34 48 52" xmlns="http://www.w3.org/2000/svg">
+          {/* Left wing */}
+          <ellipse className="lb-wing-l" cx="-6" cy="0" rx="12" ry="10" fill="#d42010" style={{transformOrigin:'0px 0px'}} />
+          {/* Right wing */}
+          <ellipse className="lb-wing-r" cx="6" cy="0" rx="12" ry="10" fill="#d42010" style={{transformOrigin:'0px 0px'}} />
+          {/* Dark body (visible when wings open) */}
+          <ellipse cx="0" cy="0" rx="6" ry="9" fill="#1a0800" />
+          {/* Shell */}
+          <ellipse className="lb-shell" cx="0" cy="0" rx="13" ry="11" fill="#d42010" />
+          <ellipse cx="-3.5" cy="-4" rx="5" ry="3.5" fill="rgba(255,120,100,0.45)" />
+          <line x1="0" y1="-11" x2="0" y2="11" stroke="#1a0800" strokeWidth="1.4" />
+          {/* Spots */}
+          <circle cx="-4.5" cy="-3.5" r="2.5" fill="#1a0800" />
+          <circle cx="-5" cy="3" r="2" fill="#1a0800" />
+          <circle cx="4.5" cy="-3.5" r="2.5" fill="#1a0800" />
+          <circle cx="5" cy="3" r="2" fill="#1a0800" />
+          {/* Head */}
+          <ellipse cx="0" cy="-13" rx="7" ry="6" fill="#1a0800" />
+          <circle cx="-3.5" cy="-14" r="2.2" fill="white" />
+          <circle cx="3.5" cy="-14" r="2.2" fill="white" />
+          <circle cx="-3" cy="-14" r="1.2" fill="#1a0800" />
+          <circle cx="3.5" cy="-14" r="1.2" fill="#1a0800" />
+          <circle cx="-2.5" cy="-14.8" r="0.5" fill="white" />
+          <circle cx="4" cy="-14.8" r="0.5" fill="white" />
+          {/* Antennae */}
+          <path d="M-3,-18 C-5,-24 -8,-28 -10,-30" fill="none" stroke="#1a0800" strokeWidth="1.2" strokeLinecap="round" />
+          <circle cx="-10" cy="-30" r="1.5" fill="#1a0800" />
+          <path d="M3,-18 C5,-24 8,-28 10,-30" fill="none" stroke="#1a0800" strokeWidth="1.2" strokeLinecap="round" />
+          <circle cx="10" cy="-30" r="1.5" fill="#1a0800" />
+          {/* Legs */}
+          <g className="lb-legs">
+            <path d="M-12,-2 C-18,-4 -20,-2 -18,0" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
+            <path d="M-12,4 C-18,4 -20,6 -18,8" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
+            <path d="M12,-2 C18,-4 20,-2 18,0" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
+            <path d="M12,4 C18,4 20,6 18,8" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
+          </g>
+        </svg>
+      </div>}
     </>
   );
 }
