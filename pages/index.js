@@ -264,7 +264,6 @@ nav{
 .qt{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-style:italic;color:var(--ink);line-height:1.68;padding-left:8px;margin-bottom:12px}
 .qt-emphasis{font-family:'Playfair Display',Georgia,serif;font-size:19px;font-style:italic;color:var(--blue2);line-height:2.0;padding-left:8px;margin:16px 0;font-weight:600}
 .qa{font-size:12px;color:var(--ink3);font-weight:600;letter-spacing:.3px;margin-top:18px}
-.quote-lb{position:absolute;bottom:18px;right:24px}
 
 /* ── STAKE ROW ── */
 .stake{
@@ -1139,35 +1138,6 @@ const landingBody = `<!-- NAV -->
       <p class="qt">DiagnoVera seeks to solve the modern clinical burden by delivering a sophisticated, world-class platform that brings these aspirations to fruition. Our goal is to amplify the physician&rsquo;s ability to care, rather than replace it.</p>
       <p class="qt" style="font-weight:600;color:var(--blue2)">That is what better medicine looks like.</p>
       <div class="qa">Dr. Mehrdad Ghahremani-Ghajar, DO &mdash; Nephrologist &middot; Founder &amp; CMO, DiagnoVera</div>
-      <div class="quote-lb">
-        <svg width="52" height="52" viewBox="-20 -26 40 44" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="0" cy="14" rx="16" ry="4.5" fill="rgba(0,0,0,0.14)"/>
-          <ellipse cx="0" cy="0" rx="14" ry="12" fill="#d42010"/>
-          <ellipse cx="-4" cy="-5" rx="6" ry="4" fill="rgba(255,120,100,0.44)"/>
-          <line x1="0" y1="-12" x2="0" y2="12" stroke="#1a0800" stroke-width="1.5"/>
-          <circle cx="-5" cy="-4" r="2.8" fill="#1a0800"/>
-          <circle cx="-6" cy="3"  r="2.2" fill="#1a0800"/>
-          <circle cx="-4" cy="9"  r="1.8" fill="#1a0800"/>
-          <circle cx="5"  cy="-4" r="2.8" fill="#1a0800"/>
-          <circle cx="6"  cy="3"  r="2.2" fill="#1a0800"/>
-          <circle cx="4"  cy="9"  r="1.8" fill="#1a0800"/>
-          <ellipse cx="0" cy="-13" rx="7" ry="6" fill="#1a0800"/>
-          <circle cx="-3.5" cy="-14" r="2.2" fill="white"/>
-          <circle cx="3.5"  cy="-14" r="2.2" fill="white"/>
-          <circle cx="-3"   cy="-14" r="1.2" fill="#1a0800"/>
-          <circle cx="3.5"  cy="-14" r="1.2" fill="#1a0800"/>
-          <circle cx="-2.5" cy="-14.8" r="0.5" fill="white"/>
-          <circle cx="4"    cy="-14.8" r="0.5" fill="white"/>
-          <path d="M-3,-18 C-5,-24 -8,-28 -10,-30" fill="none" stroke="#1a0800" stroke-width="1.2" stroke-linecap="round"/>
-          <circle cx="-10" cy="-30" r="1.5" fill="#1a0800"/>
-          <path d="M3,-18 C5,-24 8,-28 10,-30" fill="none" stroke="#1a0800" stroke-width="1.2" stroke-linecap="round"/>
-          <circle cx="10" cy="-30" r="1.5" fill="#1a0800"/>
-          <path d="M-12,-2 C-18,-4 -20,-2 -18,0" fill="none" stroke="#1a0800" stroke-width="1.1" stroke-linecap="round"/>
-          <path d="M-12,4  C-18,4  -20,6  -18,8" fill="none" stroke="#1a0800" stroke-width="1.1" stroke-linecap="round"/>
-          <path d="M12,-2  C18,-4  20,-2  18,0"  fill="none" stroke="#1a0800" stroke-width="1.1" stroke-linecap="round"/>
-          <path d="M12,4   C18,4   20,6   18,8"  fill="none" stroke="#1a0800" stroke-width="1.1" stroke-linecap="round"/>
-        </svg>
-      </div>
     </div>
   </div>
 </section>
@@ -1522,13 +1492,13 @@ const overrideCSS = `
 const ladybugCSS = `
 /* ── LEFT PANEL: TULIP GARDEN + LADYBUG ── */
 .lb-garden{
-  position:fixed;left:0;top:0;bottom:0;width:52px;z-index:490;
+  position:fixed;left:0;top:0;bottom:0;width:60px;z-index:490;
   pointer-events:none;overflow:visible;
 }
 @media(max-width:900px){.lb-garden{display:none}}
-.lb-tulip-stem{position:absolute;left:18px;width:36px}
+.lb-tulip-stem{position:absolute;left:8px;width:48px}
 .lb-bug{
-  position:fixed;left:14px;z-index:500;pointer-events:none;
+  position:fixed;left:18px;z-index:500;pointer-events:none;
   transition:top 1.4s cubic-bezier(0.25,0.1,0.25,1);
   will-change:top;
 }
@@ -1567,7 +1537,7 @@ function Tulip({ palette, flip }) {
   const { p1, p2, p3, hi } = palette;
   const sc = flip ? 'scale(-1,1) translate(-36,0)' : '';
   return (
-    <svg width="36" height="90" viewBox="0 0 36 90" xmlns="http://www.w3.org/2000/svg" style={{display:'block'}}>
+    <svg width="48" height="120" viewBox="0 0 36 90" xmlns="http://www.w3.org/2000/svg" style={{display:'block'}}>
       <g transform={sc}>
         {/* Stem — gentle curve */}
         <path d="M18,90 C17,75 15,60 16,42" stroke="#3a7a2a" strokeWidth="2.2" fill="none" strokeLinecap="round"/>
@@ -1681,12 +1651,12 @@ export default function HomePage() {
         <div className="lb-garden">
           {viewYs.map((vy, i) => (
             <div key={i} className="lb-tulip-stem" style={{
-              top: vy - 60,
+              top: vy - 80,
               position: 'fixed',
-              left: i % 2 === 0 ? 6 : 16,
+              left: i % 2 === 0 ? 4 : 10,
               opacity: activeTulip === i ? 1 : 0.5,
               transition: 'opacity 0.6s',
-              transform: i % 2 === 0 ? 'none' : 'rotate(5deg)',
+              transform: i % 2 === 0 ? 'rotate(-3deg)' : 'rotate(4deg)',
             }}>
               <Tulip palette={TULIP_PALETTES[i % TULIP_PALETTES.length]} flip={i % 2 !== 0} />
             </div>
