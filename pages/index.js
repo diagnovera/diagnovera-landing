@@ -340,7 +340,26 @@ const landingBody = `<!-- NAV -->
 <nav>
   <a class="logo" href="#">
     <div class="logo-mark">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 4 5 4 9c0 4 3 6.5 6 8l2 5 2-5c3-1.5 6-4 6-8 0-4-4-7-8-7z" fill="white" opacity="0.9"/><circle cx="12" cy="9" r="3" fill="#0288d1"/></svg>
+      <svg width="22" height="22" viewBox="-16 -20 32 34" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="0" cy="0" rx="10" ry="8.5" fill="#d42010"/>
+        <ellipse cx="-2.5" cy="-3" rx="3.8" ry="2.8" fill="rgba(255,160,140,0.45)"/>
+        <line x1="0" y1="-8.5" x2="0" y2="8.5" stroke="#1a0800" stroke-width="1.2"/>
+        <circle cx="-3.5" cy="-2.5" r="2" fill="#1a0800"/>
+        <circle cx="-4" cy="2.5" r="1.6" fill="#1a0800"/>
+        <circle cx="3.5" cy="-2.5" r="2" fill="#1a0800"/>
+        <circle cx="4" cy="2.5" r="1.6" fill="#1a0800"/>
+        <ellipse cx="0" cy="-9.5" rx="5.2" ry="4.5" fill="#1a0800"/>
+        <circle cx="-2.5" cy="-10.5" r="1.7" fill="white"/>
+        <circle cx="2.5" cy="-10.5" r="1.7" fill="white"/>
+        <circle cx="-2" cy="-10.5" r="0.9" fill="#1a0800"/>
+        <circle cx="2.8" cy="-10.5" r="0.9" fill="#1a0800"/>
+        <circle cx="-1.6" cy="-11.1" r="0.4" fill="white"/>
+        <circle cx="3.2" cy="-11.1" r="0.4" fill="white"/>
+        <path d="M-2,-13.5 C-3.5,-16.5 -6,-18 -7.5,-19" fill="none" stroke="#1a0800" stroke-width="0.9" stroke-linecap="round"/>
+        <circle cx="-7.5" cy="-19" r="1.1" fill="#1a0800"/>
+        <path d="M2,-13.5 C3.5,-16.5 6,-18 7.5,-19" fill="none" stroke="#1a0800" stroke-width="0.9" stroke-linecap="round"/>
+        <circle cx="7.5" cy="-19" r="1.1" fill="#1a0800"/>
+      </svg>
     </div>
     <span class="logo-name">Diagno<b>Vera</b><sup class="logo-tm">&#8482;</sup></span>
   </a>
@@ -1619,25 +1638,21 @@ const overrideCSS = `
 `;
 
 const ladybugCSS = `
-/* Animated Ladybug */
-.lb-wrap{position:fixed;bottom:60px;left:80px;z-index:500;pointer-events:none}
+/* Animated Ladybug — sits on right edge, never covers content */
+.lb-wrap{position:fixed;bottom:80px;left:60px;z-index:500;pointer-events:none;transition:opacity 0.5s}
 .lb-mover{position:relative;width:48px;height:48px}
+/* After landing, switch to right-side tulip perch */
+.lb-wrap.lb-landed{left:auto;right:18px;bottom:auto;top:50%;margin-top:-40px}
+
+/* Small tulip decoration on right edge for the ladybug to sit on */
+.lb-tulip{position:fixed;right:6px;top:50%;margin-top:-10px;z-index:499;opacity:0;transition:opacity 0.8s}
+.lb-tulip.visible{opacity:1}
 
 @keyframes lbCrawl{
   0%{transform:translate(0,0) rotate(0)}
-  30%{transform:translate(90px,-8px) rotate(2deg)}
-  60%{transform:translate(170px,-3px) rotate(-1deg)}
-  100%{transform:translate(220px,0) rotate(0)}
-}
-@keyframes lbFly{
-  0%{transform:translate(220px,0) scale(1)}
-  20%{transform:translate(220px,-60px) scale(0.85)}
-  60%{transform:translate(360px,-250px) scale(0.65)}
-  100%{transform:translate(400px,-340px) scale(0.5)}
-}
-@keyframes lbBob{
-  0%,100%{transform:translate(400px,-340px) scale(0.5) rotate(0)}
-  50%{transform:translate(400px,-346px) scale(0.5) rotate(3deg)}
+  30%{transform:translate(70px,-6px) rotate(2deg)}
+  60%{transform:translate(130px,-2px) rotate(-1deg)}
+  100%{transform:translate(180px,0) rotate(0)}
 }
 @keyframes lbLegWiggle{
   0%,100%{transform:rotate(0)}25%{transform:rotate(10deg)}75%{transform:rotate(-10deg)}
@@ -1654,42 +1669,63 @@ const ladybugCSS = `
 @keyframes lbFlutterR{
   0%,100%{transform:rotate(20deg) scaleX(1.4)}50%{transform:rotate(45deg) scaleX(1.5)}
 }
+@keyframes lbBobSide{
+  0%,100%{transform:scale(0.6) rotate(0)}
+  50%{transform:scale(0.6) rotate(3deg) translateY(-4px)}
+}
 `;
 
 export default function HomePage() {
+  const wrapRef = useRef(null);
   const moverRef = useRef(null);
   const wlRef = useRef(null);
   const wrRef = useRef(null);
   const legsRef = useRef(null);
+  const tulipRef = useRef(null);
 
   useEffect(() => {
-    const m = moverRef.current, wl = wlRef.current, wr = wrRef.current, legs = legsRef.current;
-    if (!m) return;
+    const wrap = wrapRef.current, m = moverRef.current;
+    const wl = wlRef.current, wr = wrRef.current, legs = legsRef.current;
+    const tulip = tulipRef.current;
+    if (!wrap || !m) return;
 
-    // Phase 1: Crawl (0 → 7s)
-    m.style.animation = 'lbCrawl 7s ease-in-out forwards';
+    // Phase 1: Crawl across bottom-left (0 → 6s)
+    m.style.animation = 'lbCrawl 6s ease-in-out forwards';
     if (legs) legs.style.animation = 'lbLegWiggle 0.35s ease-in-out infinite';
 
-    // Phase 2: Stop, open wings (7s → 8s)
+    // Phase 2: Stop crawling, open wings (6s → 7s)
     const t1 = setTimeout(() => {
       if (legs) legs.style.animation = 'none';
       if (wl) { wl.style.transformOrigin = '13px 0'; wl.style.animation = 'lbWingL 0.8s ease-out forwards'; }
       if (wr) { wr.style.transformOrigin = '-13px 0'; wr.style.animation = 'lbWingR 0.8s ease-out forwards'; }
-    }, 7000);
+      // Show the tulip perch on the right
+      if (tulip) tulip.classList.add('visible');
+    }, 6000);
 
-    // Phase 3: Flutter wings + fly (8s → 11s)
+    // Phase 3: Flutter wings + fly to right-side tulip (7s → 9.5s)
     const t2 = setTimeout(() => {
       if (wl) wl.style.animation = 'lbFlutterL 0.15s ease-in-out infinite';
       if (wr) wr.style.animation = 'lbFlutterR 0.15s ease-in-out infinite';
-      m.style.animation = 'lbFly 3s ease-in-out forwards';
-    }, 8000);
+      // Fly: animate from current position to the right-side tulip
+      // Calculate target: right edge of viewport, vertically centered
+      const rect = wrap.getBoundingClientRect();
+      const targetX = window.innerWidth - 50 - rect.left;
+      const targetY = -(rect.bottom - window.innerHeight / 2) - 20;
+      m.style.transition = 'transform 2.5s ease-in-out';
+      m.style.transform = 'translate(' + targetX + 'px, ' + targetY + 'px) scale(0.6)';
+    }, 7000);
 
-    // Phase 4: Land, close wings, bob (11s+)
+    // Phase 4: Land on tulip, close wings, switch to right-side perch (9.5s+)
     const t3 = setTimeout(() => {
+      // Close wings
       if (wl) { wl.style.animation = 'none'; wl.style.transform = 'rotate(0) scaleX(1)'; wl.style.transition = 'transform 0.5s'; }
       if (wr) { wr.style.animation = 'none'; wr.style.transform = 'rotate(0) scaleX(1)'; wr.style.transition = 'transform 0.5s'; }
-      m.style.animation = 'lbBob 2.5s ease-in-out infinite';
-    }, 11000);
+      // Reposition: remove old position, place on right side tulip
+      wrap.classList.add('lb-landed');
+      m.style.transition = 'none';
+      m.style.transform = 'scale(0.6)';
+      m.style.animation = 'lbBobSide 2.5s ease-in-out infinite';
+    }, 9500);
 
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
@@ -1705,8 +1741,23 @@ export default function HomePage() {
       <style dangerouslySetInnerHTML={{ __html: landingCSS + overrideCSS + ladybugCSS }} />
       <div className="diagnovera-landing" dangerouslySetInnerHTML={{ __html: landingBody }} />
 
+      {/* Tulip perch on right edge — ladybug lands here */}
+      <div ref={tulipRef} className="lb-tulip">
+        <svg width="36" height="80" viewBox="0 0 36 80" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18,80 C17,60 16,45 18,30" stroke="#386828" strokeWidth="3" fill="none" strokeLinecap="round"/>
+          <path d="M18,42 C8,38 2,28 5,18 C7,24 12,32 18,42Z" fill="#4a8038"/>
+          <path d="M18,36 C28,32 34,22 31,12 C29,18 24,28 18,36Z" fill="#528840"/>
+          <path d="M10,18 C8,8 12,0 18,0 C24,0 28,8 26,18 C24,10 22,6 18,4 C14,6 12,10 10,18Z" fill="#d42010"/>
+          <line x1="18" y1="18" x2="18" y2="0" stroke="#1a0800" strokeWidth="0.8"/>
+          <circle cx="14" cy="10" r="1.8" fill="#1a0800"/>
+          <circle cx="22" cy="10" r="1.8" fill="#1a0800"/>
+          <circle cx="15" cy="15" r="1.3" fill="#1a0800"/>
+          <circle cx="21" cy="15" r="1.3" fill="#1a0800"/>
+        </svg>
+      </div>
+
       {/* Animated Ladybug */}
-      <div className="lb-wrap">
+      <div ref={wrapRef} className="lb-wrap">
         <div ref={moverRef} className="lb-mover">
           <svg width="48" height="48" viewBox="-24 -34 48 52" xmlns="http://www.w3.org/2000/svg">
             {/* Shadow */}
