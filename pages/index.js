@@ -1129,7 +1129,7 @@ const landingBody = `<!-- NAV -->
 
     <!-- Founder quote with ladybug accent -->
     <div class="quote-panel">
-      <p class="qt">At the heart of every diagnostic algorithm is a patient who deserves our best. I built DiagnoVera because I believe technology should amplify the physician&rsquo;s ability to care &mdash; not replace it. When a nephrologist can see 165 clinical variables analyzed in seconds, with a verified diagnosis and a complete note ready to sign, they gain something precious: time to listen, time to explain, time to be present with their patient. That is what better care looks like.</p>
+      <p class="qt">At the heart of every diagnostic algorithm is a patient who deserves our best. In an age of ever-increasing clinical complexity, physician judgment is most powerful when it is supported by diagnostic accuracy that misses nothing. I built DiagnoVera because I believe AI will be essential and indispensable in medicine &mdash; and it is equally important to have a firm understanding of both its extraordinary rewards and its potential pitfalls. When a nephrologist can see 165 clinical variables analyzed in seconds, with a verified diagnosis and a complete note ready to sign, they gain something precious: time to listen, time to explain, time to be present with their patient. DiagnoVera seeks to solve these challenges &mdash; to bring a highly advanced, world-class platform that bears these aspirations to fruit, amplifying the physician&rsquo;s ability to care rather than replacing it. That is what better medicine looks like.</p>
       <div class="qa">Dr. Mehrdad Ghahremani-Ghajar, DO &mdash; Nephrologist &middot; Founder &amp; CMO, DiagnoVera</div>
       <div class="quote-lb">
         <svg width="52" height="52" viewBox="-20 -26 40 44" xmlns="http://www.w3.org/2000/svg">
@@ -1558,10 +1558,10 @@ export default function HomePage() {
       const progress = Math.min(1, Math.max(0, window.scrollY / docHeight));
       const totalLen = path.getTotalLength();
       const pt = path.getPointAtLength(progress * totalLen);
-      // Convert SVG user-space (0-500 x, 0-2000 y) to viewport pixels
+      // Convert SVG user-space (0-1000 x, 0-2000 y) to viewport pixels
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      setBugPos({ x: (pt.x / 500) * vw, y: (pt.y / 2000) * vh });
+      setBugPos({ x: (pt.x / 1000) * vw, y: (pt.y / 2000) * vh });
     }
 
     function onScroll() {
@@ -1595,14 +1595,28 @@ export default function HomePage() {
 
       {/* Hidden SVG with S-shaped flight path */}
       {mounted && (
-        <svg viewBox="0 0 500 2000" preserveAspectRatio="none" style={{ position:'fixed',top:0,left:0,width:'100vw',height:'100vh',zIndex:497,pointerEvents:'none' }}>
+        <svg viewBox="0 0 1000 2000" preserveAspectRatio="none" style={{ position:'fixed',top:0,left:0,width:'100vw',height:'100vh',zIndex:497,pointerEvents:'none' }}>
           <path
             ref={pathRef}
-            d="M 60,40 C 200,120 380,180 340,340 S 80,520 220,680 S 420,820 180,980 S 40,1140 280,1300 S 460,1460 160,1620 S 40,1780 240,1940"
+            d={
+              'M 940,20 ' +
+              'C 960,100 970,180 950,250 ' +
+              'S 920,320 60,400 ' +
+              'C 30,440 20,500 40,560 ' +
+              'S 70,620 950,700 ' +
+              'C 970,750 980,820 960,880 ' +
+              'S 930,940 50,1020 ' +
+              'C 25,1070 20,1140 40,1200 ' +
+              'S 60,1260 940,1340 ' +
+              'C 965,1400 970,1460 955,1520 ' +
+              'S 930,1580 55,1660 ' +
+              'C 30,1720 20,1780 40,1840 ' +
+              'S 60,1900 950,1980'
+            }
             fill="none"
-            stroke="rgba(212,32,16,0.04)"
-            strokeWidth="2"
-            strokeDasharray="8 6"
+            stroke="rgba(212,32,16,0.03)"
+            strokeWidth="1.5"
+            strokeDasharray="6 8"
           />
         </svg>
       )}
