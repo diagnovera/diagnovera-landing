@@ -39,6 +39,8 @@ nav{
 }
 .logo-name{font-family:'Inter','DM Sans',sans-serif;font-size:19px;font-weight:700;color:var(--ink);letter-spacing:-0.025em}
 .logo-name b{color:#1FA9E8;font-weight:700}
+.logo-tm{font-size:7.5px;color:var(--blue);vertical-align:super;letter-spacing:1px;font-family:sans-serif}
+.beta-badge{display:inline-block;margin-left:6px;padding:1px 7px;font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;color:#fff;background:#0288d1;border-radius:4px;vertical-align:middle;line-height:16px}
 .nav-links{display:flex;gap:26px}
 .nav-links a{font-size:13px;color:var(--ink3);transition:color .2s}
 .nav-links a:hover{color:var(--ink)}
@@ -362,7 +364,8 @@ const landingBody = `<!-- NAV -->
         </g>
       </svg>
     </div>
-    <span class="logo-name">Diagno<b>vera</b></span>
+    <span class="logo-name">Diagno<b>Vera</b><sup class="logo-tm">&#8482;</sup></span>
+    <span class="beta-badge">BETA</span>
   </a>
   <div class="nav-links">
     <a href="#platform">Platform</a>
@@ -370,6 +373,7 @@ const landingBody = `<!-- NAV -->
     <a href="#telehealth">Telehealth</a>
     <a href="#billing">Billing &amp; RCM</a>
     <a href="#solutions">Solutions</a>
+    <a href="https://diagnovera-924070815611.us-west1.run.app/about">Documentation</a>
     <a href="#contact">Contact</a>
   </div>
   <div class="nav-right">
@@ -1424,11 +1428,11 @@ const landingBody = `<!-- NAV -->
     <div>
       <div class="fcol-title">Company</div>
       <div class="fcol-links">
-        <a href="#">About Us</a>
+        <a href="https://diagnovera-924070815611.us-west1.run.app/about">About Us</a>
         <a href="#">Leadership</a>
         <a href="#">Careers</a>
         <a href="#">Clinical Evidence</a>
-        <a href="#">FHIR Documentation</a>
+        <a href="https://diagnovera-924070815611.us-west1.run.app/about">FHIR Documentation</a>
         <a href="#">Security Whitepaper</a>
         <a href="#">Privacy Policy</a>
         <a href="#">Terms of Service</a>
