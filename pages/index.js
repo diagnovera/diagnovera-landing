@@ -1,12 +1,8 @@
 // pages/index.js
-// DiagnoVera Landing Page — Vercel deployment at diagnovera.com
-// NEXT_PUBLIC_APP_URL env var rewrites /login and /about to Cloud Run URLs.
-// Converted from static HTML. Uses dangerouslySetInnerHTML to preserve
-// the complex SVG hero (600+ lines of mountain/tulip artwork) without
-// needing JSX attribute conversion.
-
+// DiagnoVera Landing Page — Vercel deployment
+// Login links point to Cloud Run backend
 import Head from 'next/head';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const landingCSS = `
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -46,7 +42,6 @@ nav{
 .logo-name{font-family:'Playfair Display',Georgia,serif;font-size:19px;font-weight:900;color:var(--ink);letter-spacing:-.3px}
 .logo-name b{color:var(--blue)}
 .logo-tm{font-size:7.5px;color:var(--blue);vertical-align:super;letter-spacing:1px;font-family:sans-serif}
-.beta-badge{display:inline-block;margin-left:6px;padding:1px 7px;font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;color:#fff;background:#0288d1;border-radius:4px;vertical-align:middle;line-height:16px}
 .nav-links{display:flex;gap:26px}
 .nav-links a{font-size:13px;color:var(--ink3);transition:color .2s}
 .nav-links a:hover{color:var(--ink)}
@@ -265,9 +260,10 @@ nav{
   font-family:'Playfair Display',Georgia,serif;
   font-size:120px;font-weight:900;color:rgba(2,136,209,0.08);line-height:1;
 }
-.qt{font-family:'Playfair Display',Georgia,serif;font-size:19px;font-style:italic;color:var(--ink);line-height:1.62;padding-left:8px;margin-bottom:16px}
-.qa{font-size:12px;color:var(--ink3);font-weight:600;letter-spacing:.3px}
-.quote-lb{position:absolute;bottom:18px;right:24px}
+.qt-title{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:900;color:var(--blue);margin-bottom:14px;padding-left:8px;letter-spacing:-.3px}
+.qt{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-style:italic;color:var(--ink);line-height:1.68;padding-left:8px;margin-bottom:12px}
+.qt-emphasis{font-family:'Playfair Display',Georgia,serif;font-size:19px;font-style:italic;color:var(--blue2);line-height:2.0;padding-left:8px;margin:16px 0;font-weight:600}
+.qa{font-size:12px;color:var(--ink3);font-weight:600;letter-spacing:.3px;margin-top:18px}
 
 /* ── STAKE ROW ── */
 .stake{
@@ -345,10 +341,28 @@ const landingBody = `<!-- NAV -->
 <nav>
   <a class="logo" href="#">
     <div class="logo-mark">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 4 5 4 9c0 4 3 6.5 6 8l2 5 2-5c3-1.5 6-4 6-8 0-4-4-7-8-7z" fill="white" opacity="0.9"/><circle cx="12" cy="9" r="3" fill="#0288d1"/></svg>
+      <svg width="22" height="22" viewBox="-16 -20 32 34" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="0" cy="0" rx="10" ry="8.5" fill="#d42010"/>
+        <ellipse cx="-2.5" cy="-3" rx="3.8" ry="2.8" fill="rgba(255,160,140,0.45)"/>
+        <line x1="0" y1="-8.5" x2="0" y2="8.5" stroke="#1a0800" stroke-width="1.2"/>
+        <circle cx="-3.5" cy="-2.5" r="2" fill="#1a0800"/>
+        <circle cx="-4" cy="2.5" r="1.6" fill="#1a0800"/>
+        <circle cx="3.5" cy="-2.5" r="2" fill="#1a0800"/>
+        <circle cx="4" cy="2.5" r="1.6" fill="#1a0800"/>
+        <ellipse cx="0" cy="-9.5" rx="5.2" ry="4.5" fill="#1a0800"/>
+        <circle cx="-2.5" cy="-10.5" r="1.7" fill="white"/>
+        <circle cx="2.5" cy="-10.5" r="1.7" fill="white"/>
+        <circle cx="-2" cy="-10.5" r="0.9" fill="#1a0800"/>
+        <circle cx="2.8" cy="-10.5" r="0.9" fill="#1a0800"/>
+        <circle cx="-1.6" cy="-11.1" r="0.4" fill="white"/>
+        <circle cx="3.2" cy="-11.1" r="0.4" fill="white"/>
+        <path d="M-2,-13.5 C-3.5,-16.5 -6,-18 -7.5,-19" fill="none" stroke="#1a0800" stroke-width="0.9" stroke-linecap="round"/>
+        <circle cx="-7.5" cy="-19" r="1.1" fill="#1a0800"/>
+        <path d="M2,-13.5 C3.5,-16.5 6,-18 7.5,-19" fill="none" stroke="#1a0800" stroke-width="0.9" stroke-linecap="round"/>
+        <circle cx="7.5" cy="-19" r="1.1" fill="#1a0800"/>
+      </svg>
     </div>
     <span class="logo-name">Diagno<b>Vera</b><sup class="logo-tm">&#8482;</sup></span>
-    <span class="beta-badge">BETA</span>
   </a>
   <div class="nav-links">
     <a href="#platform">Platform</a>
@@ -356,13 +370,12 @@ const landingBody = `<!-- NAV -->
     <a href="#telehealth">Telehealth</a>
     <a href="#billing">Billing &amp; RCM</a>
     <a href="#solutions">Solutions</a>
-    <a href="/about">Documentation</a>
     <a href="#contact">Contact</a>
   </div>
   <div class="nav-right">
     <a class="btn-demo" href="#contact">Request Demo</a>
-    <a class="btn-cms" href="https://diagnovera-cms-924070815611.us-central1.run.app/admin" target="_blank" rel="noopener noreferrer" style="font-size:13px;color:#64748b;text-decoration:none;padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;transition:all 0.2s">DiagnoVera CMS</a>
-    <a class="btn-login" href="/login">Sign In &#8594;</a>
+    <a href="https://diagnovera-cms-924070815611.us-central1.run.app/admin" target="_blank" rel="noopener noreferrer" style="font-size:13px;color:#64748b;text-decoration:none;padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;transition:all 0.2s">DiagnoVera CMS</a>
+    <a class="btn-login" href="https://diagnovera-924070815611.us-west1.run.app/login">Sign In &#8594;</a>
   </div>
 </nav>
 
@@ -983,7 +996,7 @@ const landingBody = `<!-- NAV -->
       <h1>Where every<br>kidney care setting<br>speaks <em>one language</em></h1>
       <p class="hero-sub">DiagnoVera connects <strong>hospitals, nursing homes, dialysis centers, IPAs, and payers</strong> with AI diagnosis, automated documentation, nephrology billing, and telehealth — all in one verified platform.</p>
       <div class="hero-ctas">
-        <a class="btn-enter" href="/login">Enter Platform &#8594;</a>
+        <a class="btn-enter" href="https://diagnovera-924070815611.us-west1.run.app/login">Enter Platform &#8594;</a>
         <a class="btn-ghost" href="#contact">Request a Demo</a>
       </div>
     </div>
@@ -1021,8 +1034,8 @@ const landingBody = `<!-- NAV -->
   <div class="si">
     <div class="sh">
       <div class="eyebrow">What DiagnoVera Does</div>
-      <div class="h2">Six problems.<br><em>One platform.</em></div>
-      <p class="section-lead">Nephrology care is fragmented by design. Disconnected facilities, incompatible EHRs, paper-based billing, no subspecialist reach into nursing homes. DiagnoVera solves each of these — without replacing what already works.</p>
+      <div class="h2">An AI-Powered EMR<br><em>Built to Think.</em></div>
+      <p class="section-lead">DiagnoVera is more than a traditional EMR &mdash; it is an AI-powered clinical intelligence platform that doesn&rsquo;t just store information, it understands it. By processing clinical data through advanced diagnostic algorithms, DiagnoVera provides meaningful analysis that empowers physicians to deliver better care. It integrates seamlessly with existing EHR systems like Epic and Cerner, reaching into hospitals, clinics, nursing homes, long-term care facilities, and beyond.</p>
     </div>
     <div class="card-grid">
 
@@ -1030,30 +1043,10 @@ const landingBody = `<!-- NAV -->
       <div class="fcard fc-blue">
         <div class="fcard-top">
           <div class="fcard-icon" style="background:#e6f4ff;font-size:24px">&#128279;</div>
-          <svg width="36" height="36" viewBox="-20 -26 40 40" xmlns="http://www.w3.org/2000/svg">
-  <ellipse cx="0" cy="10" rx="13" ry="3.5" fill="rgba(0,0,0,0.15)"/>
-  <ellipse cx="0" cy="0" rx="13" ry="11" fill="#d42010"/>
-  <ellipse cx="-3.5" cy="-4" rx="5" ry="3.5" fill="rgba(255,120,100,0.45)"/>
-  <line x1="0" y1="-11" x2="0" y2="11" stroke="#1a0800" stroke-width="1.4"/>
-  <circle cx="-4.5" cy="-3.5" r="2.5" fill="#1a0800"/>
-  <circle cx="-5" cy="3" r="2" fill="#1a0800"/>
-  <circle cx="4.5" cy="-3.5" r="2.5" fill="#1a0800"/>
-  <circle cx="5" cy="3" r="2" fill="#1a0800"/>
-  <ellipse cx="0" cy="-12" rx="6.5" ry="5.5" fill="#1a0800"/>
-  <circle cx="-3" cy="-13" r="2" fill="white"/>
-  <circle cx="3"  cy="-13" r="2" fill="white"/>
-  <circle cx="-2.5" cy="-13" r="1.1" fill="#1a0800"/>
-  <circle cx="3"    cy="-13" r="1.1" fill="#1a0800"/>
-  <circle cx="-2" cy="-13.7" r="0.5" fill="white"/>
-  <circle cx="3.5" cy="-13.7" r="0.5" fill="white"/>
-  <path d="M-2.5,-15 C-4,-19 -6,-22 -8,-24" fill="none" stroke="#1a0800" stroke-width="1" stroke-linecap="round"/>
-  <circle cx="-8" cy="-24" r="1.3" fill="#1a0800"/>
-  <path d="M2.5,-15 C4,-19 6,-22 8,-24" fill="none" stroke="#1a0800" stroke-width="1" stroke-linecap="round"/>
-  <circle cx="8" cy="-24" r="1.3" fill="#1a0800"/>
-</svg>
+
         </div>
-        <h3>Universal Connectivity</h3>
-        <p>One FHIR connection links every care setting — from a 500-bed ICU to a rural nursing home. DiagnoVera reads from Epic, Cerner, PointClickCare, MatrixCare, and any HL7 FHIR R4 system. It writes completed notes <em>back</em> into the EHR automatically. No fax. No manual entry.</p>
+        <h3>Universal EHR Connectivity</h3>
+        <p>DiagnoVera integrates directly with Epic, Cerner, PointClickCare, MatrixCare, and any HL7 FHIR R4 system &mdash; bringing subspecialty-grade AI into every care setting. From a 500-bed ICU to a rural nursing home, one connection enables full bidirectional data exchange: DiagnoVera reads the patient record, performs AI-driven clinical analysis, and writes completed documentation back into the EHR. No fax machines. No manual data entry. No workflow disruption.</p>
         <div class="fcard-tags">
           <span class="ftag" style="background:#e6f4ff;color:#0a4a82;border-color:#b8d8f0">Epic FHIR</span>
           <span class="ftag" style="background:#e6f4ff;color:#0a4a82;border-color:#b8d8f0">Manifest MedEx</span>
@@ -1066,30 +1059,9 @@ const landingBody = `<!-- NAV -->
       <div class="fcard fc-blue" id="lambda-dx">
         <div class="fcard-top">
           <div class="fcard-icon" style="background:#e6f4ff;font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:#0288d1">&#923;</div>
-          <svg width="36" height="36" viewBox="-20 -26 40 40" xmlns="http://www.w3.org/2000/svg">
-  <ellipse cx="0" cy="10" rx="13" ry="3.5" fill="rgba(0,0,0,0.15)"/>
-  <ellipse cx="0" cy="0" rx="13" ry="11" fill="#d42010"/>
-  <ellipse cx="-3.5" cy="-4" rx="5" ry="3.5" fill="rgba(255,120,100,0.45)"/>
-  <line x1="0" y1="-11" x2="0" y2="11" stroke="#1a0800" stroke-width="1.4"/>
-  <circle cx="-4.5" cy="-3.5" r="2.5" fill="#1a0800"/>
-  <circle cx="-5" cy="3" r="2" fill="#1a0800"/>
-  <circle cx="4.5" cy="-3.5" r="2.5" fill="#1a0800"/>
-  <circle cx="5" cy="3" r="2" fill="#1a0800"/>
-  <ellipse cx="0" cy="-12" rx="6.5" ry="5.5" fill="#1a0800"/>
-  <circle cx="-3" cy="-13" r="2" fill="white"/>
-  <circle cx="3"  cy="-13" r="2" fill="white"/>
-  <circle cx="-2.5" cy="-13" r="1.1" fill="#1a0800"/>
-  <circle cx="3"    cy="-13" r="1.1" fill="#1a0800"/>
-  <circle cx="-2" cy="-13.7" r="0.5" fill="white"/>
-  <circle cx="3.5" cy="-13.7" r="0.5" fill="white"/>
-  <path d="M-2.5,-15 C-4,-19 -6,-22 -8,-24" fill="none" stroke="#1a0800" stroke-width="1" stroke-linecap="round"/>
-  <circle cx="-8" cy="-24" r="1.3" fill="#1a0800"/>
-  <path d="M2.5,-15 C4,-19 6,-22 8,-24" fill="none" stroke="#1a0800" stroke-width="1" stroke-linecap="round"/>
-  <circle cx="8" cy="-24" r="1.3" fill="#1a0800"/>
-</svg>
         </div>
-        <h3>Verified Diagnosis</h3>
-        <p>The &#923; Lambda Calculus engine maps 132 clinical variables through formal mathematical functions — producing a diagnosis that isn't a suggestion, it's a <em>proof</em>. Every output carries a full audit trail: ICD-10 code, confidence score, supporting variable chain. No black box.</p>
+        <h3>AI-Verified Diagnosis</h3>
+        <p>The &#923; Lambda Diagnostic Engine processes over 165 clinical variables &mdash; labs, vitals, medications, imaging, pathology, flowsheet data, and temporal trends &mdash; through Bayesian-Markov analysis and formal mathematical functions. The result is not a suggestion; it is a verified diagnosis with a complete audit trail: ICD-10 codes, confidence scores, supporting evidence chains, and KDIGO-aligned staging. Every diagnostic conclusion can be traced back to its clinical inputs. No black box. No hallucination.</p>
         <div class="fcard-tags">
           <span class="ftag" style="background:#e6f4ff;color:#0a4a82;border-color:#b8d8f0">Lambda Calculus</span>
           <span class="ftag" style="background:#e6f4ff;color:#0a4a82;border-color:#b8d8f0">Bayesian Priors</span>
@@ -1102,30 +1074,9 @@ const landingBody = `<!-- NAV -->
       <div class="fcard fc-red">
         <div class="fcard-top">
           <div class="fcard-icon" style="background:#fff0ee;font-size:24px">&#128196;</div>
-          <svg width="36" height="36" viewBox="-20 -26 40 40" xmlns="http://www.w3.org/2000/svg">
-  <ellipse cx="0" cy="10" rx="13" ry="3.5" fill="rgba(0,0,0,0.15)"/>
-  <ellipse cx="0" cy="0" rx="13" ry="11" fill="#d42010"/>
-  <ellipse cx="-3.5" cy="-4" rx="5" ry="3.5" fill="rgba(255,120,100,0.45)"/>
-  <line x1="0" y1="-11" x2="0" y2="11" stroke="#1a0800" stroke-width="1.4"/>
-  <circle cx="-4.5" cy="-3.5" r="2.5" fill="#1a0800"/>
-  <circle cx="-5" cy="3" r="2" fill="#1a0800"/>
-  <circle cx="4.5" cy="-3.5" r="2.5" fill="#1a0800"/>
-  <circle cx="5" cy="3" r="2" fill="#1a0800"/>
-  <ellipse cx="0" cy="-12" rx="6.5" ry="5.5" fill="#1a0800"/>
-  <circle cx="-3" cy="-13" r="2" fill="white"/>
-  <circle cx="3"  cy="-13" r="2" fill="white"/>
-  <circle cx="-2.5" cy="-13" r="1.1" fill="#1a0800"/>
-  <circle cx="3"    cy="-13" r="1.1" fill="#1a0800"/>
-  <circle cx="-2" cy="-13.7" r="0.5" fill="white"/>
-  <circle cx="3.5" cy="-13.7" r="0.5" fill="white"/>
-  <path d="M-2.5,-15 C-4,-19 -6,-22 -8,-24" fill="none" stroke="#1a0800" stroke-width="1" stroke-linecap="round"/>
-  <circle cx="-8" cy="-24" r="1.3" fill="#1a0800"/>
-  <path d="M2.5,-15 C4,-19 6,-22 8,-24" fill="none" stroke="#1a0800" stroke-width="1" stroke-linecap="round"/>
-  <circle cx="8" cy="-24" r="1.3" fill="#1a0800"/>
-</svg>
         </div>
-        <h3>Auto H&amp;P Generation</h3>
-        <p>A complete nephrology History &amp; Physical — HPI, ROS, Exam, Assessment, Plan — drafted in under 60 seconds. Epic-compatible, SOAP-formatted, ready to review and sign. Clinicians recover 40–60 minutes per consultation. The AI writes; the physician signs.</p>
+        <h3>Intelligent Documentation</h3>
+        <p>DiagnoVera generates complete, subspecialty-grade clinical documentation &mdash; History &amp; Physical, consultation notes, SOAP notes, and discharge summaries &mdash; in under 60 seconds. Each note is synthesized directly from the patient&rsquo;s clinical data, not from templates or dictation. The AI structures the narrative around the verified diagnosis, ensuring that every assessment finding and treatment recommendation is evidence-linked. Epic-compatible, ready to review and sign. The physician retains full editorial control; DiagnoVera eliminates the documentation burden.</p>
         <div class="fcard-tags">
           <span class="ftag" style="background:#fff0ee;color:#8b1a10;border-color:#f4c4be">SOAP Format</span>
           <span class="ftag" style="background:#fff0ee;color:#8b1a10;border-color:#f4c4be">Epic-compatible</span>
@@ -1137,30 +1088,9 @@ const landingBody = `<!-- NAV -->
       <div class="fcard fc-gold">
         <div class="fcard-top">
           <div class="fcard-icon" style="background:#fdf6e0;font-size:24px">&#128200;</div>
-          <svg width="36" height="36" viewBox="-20 -26 40 40" xmlns="http://www.w3.org/2000/svg">
-  <ellipse cx="0" cy="10" rx="13" ry="3.5" fill="rgba(0,0,0,0.15)"/>
-  <ellipse cx="0" cy="0" rx="13" ry="11" fill="#d42010"/>
-  <ellipse cx="-3.5" cy="-4" rx="5" ry="3.5" fill="rgba(255,120,100,0.45)"/>
-  <line x1="0" y1="-11" x2="0" y2="11" stroke="#1a0800" stroke-width="1.4"/>
-  <circle cx="-4.5" cy="-3.5" r="2.5" fill="#1a0800"/>
-  <circle cx="-5" cy="3" r="2" fill="#1a0800"/>
-  <circle cx="4.5" cy="-3.5" r="2.5" fill="#1a0800"/>
-  <circle cx="5" cy="3" r="2" fill="#1a0800"/>
-  <ellipse cx="0" cy="-12" rx="6.5" ry="5.5" fill="#1a0800"/>
-  <circle cx="-3" cy="-13" r="2" fill="white"/>
-  <circle cx="3"  cy="-13" r="2" fill="white"/>
-  <circle cx="-2.5" cy="-13" r="1.1" fill="#1a0800"/>
-  <circle cx="3"    cy="-13" r="1.1" fill="#1a0800"/>
-  <circle cx="-2" cy="-13.7" r="0.5" fill="white"/>
-  <circle cx="3.5" cy="-13.7" r="0.5" fill="white"/>
-  <path d="M-2.5,-15 C-4,-19 -6,-22 -8,-24" fill="none" stroke="#1a0800" stroke-width="1" stroke-linecap="round"/>
-  <circle cx="-8" cy="-24" r="1.3" fill="#1a0800"/>
-  <path d="M2.5,-15 C4,-19 6,-22 8,-24" fill="none" stroke="#1a0800" stroke-width="1" stroke-linecap="round"/>
-  <circle cx="8" cy="-24" r="1.3" fill="#1a0800"/>
-</svg>
         </div>
-        <h3>Nephrology Billing &amp; RCM</h3>
-        <p>DiagnoVera captures the complexity your documentation deserves. Auto-coded ICD-10, nephrology-specific CPT mapping, HCC risk capture, and value-based care metric documentation — generated alongside the clinical note. Undercoding is the silent revenue drain in nephrology. DiagnoVera closes it.</p>
+        <h3>Automated Billing &amp; Revenue Optimization</h3>
+        <p>Every clinical note DiagnoVera generates carries embedded billing intelligence: ICD-10 codes derived directly from the verified diagnosis, CPT mapping calibrated to nephrology-specific E&amp;M complexity, HCC risk adjustment capture, and value-based care metric documentation. Undercoding &mdash; the silent revenue drain in subspecialty medicine &mdash; is eliminated because the billing output mirrors the clinical complexity that was actually documented and verified. For payers and IPAs, Lambda-verified outputs support prior authorization on first pass.</p>
         <div class="fcard-tags">
           <span class="ftag" style="background:#fdf6e0;color:#7a5600;border-color:#e8d080">ICD-10 Auto-code</span>
           <span class="ftag" style="background:#fdf6e0;color:#7a5600;border-color:#e8d080">HCC Capture</span>
@@ -1173,30 +1103,9 @@ const landingBody = `<!-- NAV -->
       <div class="fcard fc-green">
         <div class="fcard-top">
           <div class="fcard-icon" style="background:#e8f5e9;font-size:24px">&#128241;</div>
-          <svg width="36" height="36" viewBox="-20 -26 40 40" xmlns="http://www.w3.org/2000/svg">
-  <ellipse cx="0" cy="10" rx="13" ry="3.5" fill="rgba(0,0,0,0.15)"/>
-  <ellipse cx="0" cy="0" rx="13" ry="11" fill="#d42010"/>
-  <ellipse cx="-3.5" cy="-4" rx="5" ry="3.5" fill="rgba(255,120,100,0.45)"/>
-  <line x1="0" y1="-11" x2="0" y2="11" stroke="#1a0800" stroke-width="1.4"/>
-  <circle cx="-4.5" cy="-3.5" r="2.5" fill="#1a0800"/>
-  <circle cx="-5" cy="3" r="2" fill="#1a0800"/>
-  <circle cx="4.5" cy="-3.5" r="2.5" fill="#1a0800"/>
-  <circle cx="5" cy="3" r="2" fill="#1a0800"/>
-  <ellipse cx="0" cy="-12" rx="6.5" ry="5.5" fill="#1a0800"/>
-  <circle cx="-3" cy="-13" r="2" fill="white"/>
-  <circle cx="3"  cy="-13" r="2" fill="white"/>
-  <circle cx="-2.5" cy="-13" r="1.1" fill="#1a0800"/>
-  <circle cx="3"    cy="-13" r="1.1" fill="#1a0800"/>
-  <circle cx="-2" cy="-13.7" r="0.5" fill="white"/>
-  <circle cx="3.5" cy="-13.7" r="0.5" fill="white"/>
-  <path d="M-2.5,-15 C-4,-19 -6,-22 -8,-24" fill="none" stroke="#1a0800" stroke-width="1" stroke-linecap="round"/>
-  <circle cx="-8" cy="-24" r="1.3" fill="#1a0800"/>
-  <path d="M2.5,-15 C4,-19 6,-22 8,-24" fill="none" stroke="#1a0800" stroke-width="1" stroke-linecap="round"/>
-  <circle cx="8" cy="-24" r="1.3" fill="#1a0800"/>
-</svg>
         </div>
-        <h3>Telehealth Consultations</h3>
-        <p>A nephrology subspecialist — with DiagnoVera as co-pilot — can effectively cover a nursing home, SNF, or rural hospital they've never physically visited. During the call, DiagnoVera pulls the full FHIR record and runs the diagnostic engine in real time. The consult note is generated automatically at encounter end.</p>
+        <h3>Telehealth &mdash; Subspecialty Care Without Boundaries</h3>
+        <p>Telehealth is not an add-on &mdash; it is a core capability that allows DiagnoVera to extend subspecialty nephrology into any healthcare setting: nursing homes, skilled nursing facilities, rural hospitals, home health, and outpatient clinics. During a live telehealth encounter, DiagnoVera pulls the complete FHIR record and runs its diagnostic engine in real time. The nephrologist sees the verified differential, confidence scores, and management plan before the patient finishes their history. When the encounter ends, the consult note is generated automatically and pushed back to the EHR.</p>
         <div class="fcard-tags">
           <span class="ftag" style="background:#e8f5e9;color:#1b5e20;border-color:#a8d8a8">Real-time FHIR Pull</span>
           <span class="ftag" style="background:#e8f5e9;color:#1b5e20;border-color:#a8d8a8">Auto Visit Note</span>
@@ -1208,30 +1117,9 @@ const landingBody = `<!-- NAV -->
       <div class="fcard fc-blue">
         <div class="fcard-top">
           <div class="fcard-icon" style="background:#e6f4ff;font-size:24px">&#127758;</div>
-          <svg width="36" height="36" viewBox="-20 -26 40 40" xmlns="http://www.w3.org/2000/svg">
-  <ellipse cx="0" cy="10" rx="13" ry="3.5" fill="rgba(0,0,0,0.15)"/>
-  <ellipse cx="0" cy="0" rx="13" ry="11" fill="#d42010"/>
-  <ellipse cx="-3.5" cy="-4" rx="5" ry="3.5" fill="rgba(255,120,100,0.45)"/>
-  <line x1="0" y1="-11" x2="0" y2="11" stroke="#1a0800" stroke-width="1.4"/>
-  <circle cx="-4.5" cy="-3.5" r="2.5" fill="#1a0800"/>
-  <circle cx="-5" cy="3" r="2" fill="#1a0800"/>
-  <circle cx="4.5" cy="-3.5" r="2.5" fill="#1a0800"/>
-  <circle cx="5" cy="3" r="2" fill="#1a0800"/>
-  <ellipse cx="0" cy="-12" rx="6.5" ry="5.5" fill="#1a0800"/>
-  <circle cx="-3" cy="-13" r="2" fill="white"/>
-  <circle cx="3"  cy="-13" r="2" fill="white"/>
-  <circle cx="-2.5" cy="-13" r="1.1" fill="#1a0800"/>
-  <circle cx="3"    cy="-13" r="1.1" fill="#1a0800"/>
-  <circle cx="-2" cy="-13.7" r="0.5" fill="white"/>
-  <circle cx="3.5" cy="-13.7" r="0.5" fill="white"/>
-  <path d="M-2.5,-15 C-4,-19 -6,-22 -8,-24" fill="none" stroke="#1a0800" stroke-width="1" stroke-linecap="round"/>
-  <circle cx="-8" cy="-24" r="1.3" fill="#1a0800"/>
-  <path d="M2.5,-15 C4,-19 6,-22 8,-24" fill="none" stroke="#1a0800" stroke-width="1" stroke-linecap="round"/>
-  <circle cx="8" cy="-24" r="1.3" fill="#1a0800"/>
-</svg>
         </div>
-        <h3>A Layer for Every Setting</h3>
-        <p>IPAs get population risk stratification. Hospitals get ICU-grade CRRT decision support. Nursing homes get CKD surveillance. Dialysis centers get ESRD management. Payers get Lambda-verified prior authorization documentation. Same platform. Same intelligence. Tailored to each stakeholder.</p>
+        <h3>One Intelligence Layer &mdash; Every Healthcare Setting</h3>
+        <p>DiagnoVera adapts its intelligence to each care environment. Hospitals receive ICU-grade CRRT decision support and AKI rapid response. Nursing homes and long-term care facilities gain CKD surveillance, medication safety alerts, and specialist access via telehealth. Dialysis centers receive ESRD management and adequacy tracking. Outpatient clinics get CKD progression monitoring and preventive automation. IPAs and payers receive population risk stratification and Lambda-verified prior authorization documentation. One platform. Same AI. Tailored to every stakeholder.</p>
         <div class="fcard-tags">
           <span class="ftag" style="background:#e6f4ff;color:#0a4a82;border-color:#b8d8f0">IPA Risk Stratification</span>
           <span class="ftag" style="background:#e6f4ff;color:#0a4a82;border-color:#b8d8f0">CRRT Support</span>
@@ -1243,37 +1131,14 @@ const landingBody = `<!-- NAV -->
 
     <!-- Founder quote with ladybug accent -->
     <div class="quote-panel">
-      <p class="qt">The nephrologist brings judgment, relationship, and the art of medicine. DiagnoVera brings something no human can provide alone: simultaneous analysis of 132 variables, a library of formal diagnostic functions, and a mathematical proof that every decision was grounded in evidence.</p>
-      <div class="qa">Dr. Mehrdad Ghahremani-Ghajar, MD &mdash; Nephrologist &middot; Founder &amp; CMO, DiagnoVera</div>
-      <div class="quote-lb">
-        <svg width="52" height="52" viewBox="-20 -26 40 44" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="0" cy="14" rx="16" ry="4.5" fill="rgba(0,0,0,0.14)"/>
-          <ellipse cx="0" cy="0" rx="14" ry="12" fill="#d42010"/>
-          <ellipse cx="-4" cy="-5" rx="6" ry="4" fill="rgba(255,120,100,0.44)"/>
-          <line x1="0" y1="-12" x2="0" y2="12" stroke="#1a0800" stroke-width="1.5"/>
-          <circle cx="-5" cy="-4" r="2.8" fill="#1a0800"/>
-          <circle cx="-6" cy="3"  r="2.2" fill="#1a0800"/>
-          <circle cx="-4" cy="9"  r="1.8" fill="#1a0800"/>
-          <circle cx="5"  cy="-4" r="2.8" fill="#1a0800"/>
-          <circle cx="6"  cy="3"  r="2.2" fill="#1a0800"/>
-          <circle cx="4"  cy="9"  r="1.8" fill="#1a0800"/>
-          <ellipse cx="0" cy="-13" rx="7" ry="6" fill="#1a0800"/>
-          <circle cx="-3.5" cy="-14" r="2.2" fill="white"/>
-          <circle cx="3.5"  cy="-14" r="2.2" fill="white"/>
-          <circle cx="-3"   cy="-14" r="1.2" fill="#1a0800"/>
-          <circle cx="3.5"  cy="-14" r="1.2" fill="#1a0800"/>
-          <circle cx="-2.5" cy="-14.8" r="0.5" fill="white"/>
-          <circle cx="4"    cy="-14.8" r="0.5" fill="white"/>
-          <path d="M-3,-18 C-5,-24 -8,-28 -10,-30" fill="none" stroke="#1a0800" stroke-width="1.2" stroke-linecap="round"/>
-          <circle cx="-10" cy="-30" r="1.5" fill="#1a0800"/>
-          <path d="M3,-18 C5,-24 8,-28 10,-30" fill="none" stroke="#1a0800" stroke-width="1.2" stroke-linecap="round"/>
-          <circle cx="10" cy="-30" r="1.5" fill="#1a0800"/>
-          <path d="M-12,-2 C-18,-4 -20,-2 -18,0" fill="none" stroke="#1a0800" stroke-width="1.1" stroke-linecap="round"/>
-          <path d="M-12,4  C-18,4  -20,6  -18,8" fill="none" stroke="#1a0800" stroke-width="1.1" stroke-linecap="round"/>
-          <path d="M12,-2  C18,-4  20,-2  18,0"  fill="none" stroke="#1a0800" stroke-width="1.1" stroke-linecap="round"/>
-          <path d="M12,4   C18,4   20,6   18,8"  fill="none" stroke="#1a0800" stroke-width="1.1" stroke-linecap="round"/>
-        </svg>
-      </div>
+      <div class="qt-title">The DiagnoVera Vision</div>
+      <p class="qt">At the heart of every diagnostic algorithm is a patient who deserves our absolute best. In an age of ever-increasing clinical complexity, physician judgment is most powerful when it is fortified by a level of diagnostic accuracy that leaves nothing to chance.</p>
+      <p class="qt">I built DiagnoVera because I believe AI will become an indispensable pillar of modern medicine &mdash; and it is equally vital to have a firm, ethical understanding of both its extraordinary rewards and its potential pitfalls.</p>
+      <p class="qt">When a nephrologist can see 165 clinical variables synthesized in seconds, they are provided with a verified diagnostic foundation and the essential substrate for highly accurate documentation. In this clarity, they gain something precious:</p>
+      <p class="qt-emphasis">Time to listen. &ensp;&middot;&ensp; Time to explain. &ensp;&middot;&ensp; Time to be fully present with their patient.</p>
+      <p class="qt">DiagnoVera seeks to solve the modern clinical burden by delivering a sophisticated, world-class platform that brings these aspirations to fruition. Our goal is to amplify the physician&rsquo;s ability to care, rather than replace it.</p>
+      <p class="qt" style="font-weight:600;color:var(--blue2)">That is what better medicine looks like.</p>
+      <div class="qa">Dr. Mehrdad Ghahremani-Ghajar, DO &mdash; Nephrologist &middot; Founder &amp; CMO, DiagnoVera</div>
     </div>
   </div>
 </section>
@@ -1387,9 +1252,8 @@ const landingBody = `<!-- NAV -->
     <div class="split-text">
       <div class="eyebrow" id="telehealth">Telehealth Consultations</div>
       <div class="h2">The nephrologist<br>is always <em>in the room</em></div>
-      <p>There are approximately 9,000 practicing nephrologists serving 40 million patients with kidney disease. The ratio is unsustainable. DiagnoVera lets one subspecialist cover nursing homes, SNFs, and rural hospitals they could never reach in person — with full AI co-pilot support during every encounter.</p>
-      <p>The moment a session begins, DiagnoVera pulls the complete FHIR record and runs the diagnostic engine in parallel. The nephrologist sees the ranked differential, Lambda confidence, and management plan <strong>before the patient finishes their history.</strong></p>
-      <p>Encounter ends. Consult note is generated and pushed back to the EHR. Done.</p>
+      <p>There are approximately 9,000 practicing nephrologists serving over 40 million patients with kidney disease in the United States. The ratio is unsustainable. DiagnoVera transforms one subspecialist into a virtual nephrology presence across multiple facilities &mdash; nursing homes, SNFs, rural hospitals, and clinics &mdash; with full AI diagnostic co-pilot support during every encounter.</p>
+      <p>The moment a telehealth session begins, DiagnoVera pulls the complete FHIR record and runs its diagnostic engine in parallel. The nephrologist sees the ranked differential diagnosis, Lambda verification confidence, and evidence-based management plan <strong>before the patient finishes their history.</strong> Clinical decision support happens in real time, not after the fact.</p>
       <div class="pill-row">
         <span class="pill" style="background:#e8f5e9;color:#1b5e20;border-color:#a8d8a8">Live FHIR Data Pull</span>
         <span class="pill" style="background:#e8f5e9;color:#1b5e20;border-color:#a8d8a8">AI Diagnostic Co-pilot</span>
@@ -1467,8 +1331,8 @@ const landingBody = `<!-- NAV -->
   <div class="si">
     <div class="sh">
       <div class="eyebrow" id="solutions">Where DiagnoVera Works</div>
-      <div class="h2">One platform.<br><em>Eight settings.</em></div>
-      <p class="section-lead">Kidney disease doesn't respect care setting boundaries. DiagnoVera follows the patient wherever they are.</p>
+      <div class="h2">One Platform.<br><em>Every Care Setting.</em></div>
+      <p class="section-lead">Kidney disease follows the patient across hospitals, nursing homes, dialysis centers, and living rooms. DiagnoVera follows too &mdash; bringing the same subspecialty intelligence to every setting, every encounter.</p>
     </div>
     <div class="fac-grid">
       <div class="fac"><div class="fac-icon">&#127973;</div><div class="fac-name">Acute Hospitals</div><div class="fac-desc">ICU CRRT, AKI rapid response, inpatient nephrology, Baxter &amp; Fresenius integration</div></div>
@@ -1498,11 +1362,11 @@ const landingBody = `<!-- NAV -->
     <div><div class="ant-by">Powered by</div><div class="ant-name">Anthropic Claude</div></div>
   </div>
   <div class="claude-text">
-    <h3>Specialized AI, not general AI applied to medicine</h3>
-    <p>DiagnoVera runs on Anthropic&rsquo;s Claude — custom-trained on nephrology literature, KDIGO 2024 guidelines, AKI biomarker research, dialysis protocols, and renal pathophysiology at fellowship level. Constitutional AI safety means it explains its reasoning, acknowledges uncertainty, and defers to clinical judgment. This is not ChatGPT with a medical prompt.</p>
+    <h3>Purpose-Built Nephrology AI</h3>
+    <p>DiagnoVera is powered by Anthropic&rsquo;s Claude &mdash; purpose-built for nephrology at fellowship-grade depth. The AI is trained on nephrology literature, KDIGO 2024 guidelines, AKI biomarker research, dialysis protocols, and renal pathophysiology. Constitutional AI safety ensures it explains its reasoning, acknowledges uncertainty, and always defers to clinical judgment. This is not a general-purpose chatbot with a medical prompt &mdash; it is a clinical intelligence engine designed for the complexity of kidney disease.</p>
   </div>
   <div class="claude-ctas">
-    <a class="btn-claude" href="/login">Enter DiagnoVera &#8594;</a>
+    <a class="btn-claude" href="https://diagnovera-924070815611.us-west1.run.app/login">Enter DiagnoVera &#8594;</a>
     <a class="btn-ant" href="https://www.anthropic.com">About Anthropic</a>
   </div>
 </div>
@@ -1512,7 +1376,7 @@ const landingBody = `<!-- NAV -->
   <div class="footer-grid">
     <div>
       <div class="flogo">Diagno<b>Vera</b>&#8482; &middot; DVERA&#8482;</div>
-      <p class="fdesc">A full-spectrum nephrology intelligence platform — verified AI diagnosis, automated documentation, nephrology billing, telehealth, and universal FHIR connectivity — built on Anthropic Claude.</p>
+      <p class="fdesc">An AI-powered nephrology intelligence platform &mdash; verified diagnosis, intelligent documentation, automated billing, telehealth, and universal EHR connectivity &mdash; built on Anthropic Claude.</p>
       <div class="fcontact">
         <strong>Headquarters</strong>
         1325 East Cooley Drive, Suite 109<br>Colton, CA 92324
@@ -1560,17 +1424,17 @@ const landingBody = `<!-- NAV -->
     <div>
       <div class="fcol-title">Company</div>
       <div class="fcol-links">
-        <a href="/about">About Us</a>
+        <a href="#">About Us</a>
         <a href="#">Leadership</a>
         <a href="#">Careers</a>
         <a href="#">Clinical Evidence</a>
-        <a href="/about">FHIR Documentation</a>
+        <a href="#">FHIR Documentation</a>
         <a href="#">Security Whitepaper</a>
         <a href="#">Privacy Policy</a>
         <a href="#">Terms of Service</a>
         <a href="#">HIPAA Notice</a>
         <a href="#">BAA Request</a>
-        <a href="/login">Sign In</a>
+        <a href="https://diagnovera-924070815611.us-west1.run.app/login">Sign In</a>
         <a href="https://diagnovera-cms-924070815611.us-central1.run.app/admin" style="opacity:0.5;font-size:11px">Admin</a>
       </div>
     </div>
@@ -1627,19 +1491,161 @@ const overrideCSS = `
   }
 `;
 
-export default function HomePage() {
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.__hideLoadingOverlay) {
-      window.__hideLoadingOverlay();
-    }
-  }, []);
+const ladybugCSS = `
+/* ── LEFT PANEL: TULIP GARDEN + LADYBUG ── */
+.lb-garden{
+  position:fixed;left:0;top:0;bottom:0;width:60px;z-index:490;
+  pointer-events:none;overflow:visible;
+}
+@media(max-width:900px){.lb-garden{display:none}}
+.lb-tulip-stem{position:absolute;left:8px;width:48px}
+.lb-bug{
+  position:fixed;left:28px;z-index:500;pointer-events:none;
+  transition:top 1.4s cubic-bezier(0.25,0.1,0.25,1);
+  will-change:top;
+}
+.lb-bug.flying .lb-shell{opacity:0}
+.lb-bug.flying .lb-wing-l{animation:lbFlutterL 0.18s ease-in-out infinite}
+.lb-bug.flying .lb-wing-r{animation:lbFlutterR 0.18s ease-in-out infinite}
+.lb-bug.sitting .lb-wing-l,.lb-bug.sitting .lb-wing-r{animation:none !important;transform:rotate(0) scaleX(1) !important;transition:transform 0.3s}
+.lb-bug.sitting .lb-shell{opacity:1 !important;transition:opacity 0.3s}
+.lb-bug.sitting{animation:none !important}
+@keyframes lbFlutterL{
+  0%,100%{transform:rotate(-18deg) scaleX(1.3)}
+  50%{transform:rotate(-35deg) scaleX(1.45)}
+}
+@keyframes lbFlutterR{
+  0%,100%{transform:rotate(18deg) scaleX(1.3)}
+  50%{transform:rotate(35deg) scaleX(1.45)}
+}
+`;
 
-  // When NEXT_PUBLIC_APP_URL is set (Vercel), rewrite relative links to point to Cloud Run.
-  // Locally (npm run dev), the variable is not set, so links stay relative.
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || '';
-  const body = appUrl
-    ? landingBody.replace(/href="\/login"/g, `href="${appUrl}/login"`).replace(/href="\/about"/g, `href="${appUrl}/about"`)
-    : landingBody;
+// Tulip colors — each flower gets a unique palette
+const TULIP_PALETTES = [
+  { p1:'#c41830', p2:'#e83050', p3:'#a01028', hi:'rgba(255,200,200,0.45)' },
+  { p1:'#d64080', p2:'#e860a0', p3:'#b02060', hi:'rgba(255,200,230,0.40)' },
+  { p1:'#f5e050', p2:'#f8ec80', p3:'#d0b820', hi:'rgba(255,255,220,0.50)' },
+  { p1:'#e8e8f0', p2:'#ffffff', p3:'#c8c8d8', hi:'rgba(255,255,255,0.60)' },
+  { p1:'#8030b0', p2:'#a050d0', p3:'#602088', hi:'rgba(220,180,255,0.40)' },
+  { p1:'#e85830', p2:'#f07850', p3:'#c04020', hi:'rgba(255,200,180,0.45)' },
+  { p1:'#d42050', p2:'#e84070', p3:'#b01840', hi:'rgba(255,180,200,0.40)' },
+];
+
+// Realistic tulip SVG — layered cupped petals, stem, leaf
+function Tulip({ palette, flip }) {
+  const { p1, p2, p3, hi } = palette;
+  const sc = flip ? 'scale(-1,1) translate(-36,0)' : '';
+  return (
+    <svg width="48" height="120" viewBox="0 0 36 90" xmlns="http://www.w3.org/2000/svg" style={{display:'block'}}>
+      <g transform={sc}>
+        {/* Stem — gentle curve */}
+        <path d="M18,90 C17,75 15,60 16,42" stroke="#3a7a2a" strokeWidth="2.2" fill="none" strokeLinecap="round"/>
+        {/* Leaf */}
+        <path d="M16,68 C6,60 1,48 4,36 C6,46 10,58 16,68Z" fill="#4a9038" opacity="0.85"/>
+        <path d="M16,68 C7,61 2,49 5,38" stroke="#2e6820" strokeWidth="0.6" fill="none"/>
+        {/* Calyx */}
+        <path d="M11,42 C13,38 16,36 18,36 C20,36 23,38 25,42 C21,40 15,40 11,42Z" fill="#3a7a2a"/>
+        {/* Back petals — deeper color, slightly spread */}
+        <path d="M10,42 C7,32 8,18 11,8 C13,16 12,30 13,42Z" fill={p3} opacity="0.7"/>
+        <path d="M26,42 C29,32 28,18 25,8 C23,16 24,30 23,42Z" fill={p3} opacity="0.7"/>
+        {/* Mid petals */}
+        <path d="M12,42 C9,30 9,16 12,5 C14,14 13,28 14,42Z" fill={p1}/>
+        <path d="M24,42 C27,30 27,16 24,5 C22,14 23,28 22,42Z" fill={p1}/>
+        {/* Front center petal — cupped shape */}
+        <path d="M18,42 C14,38 11,26 13,10 C15,18 17,28 18,42Z" fill={p2}/>
+        <path d="M18,42 C22,38 25,26 23,10 C21,18 19,28 18,42Z" fill={p2}/>
+        {/* Inner glow / highlight */}
+        <path d="M16,28 C17,20 18,14 18,10 C18,14 19,20 20,28Z" fill={hi}/>
+        {/* Petal edge detail */}
+        <path d="M13,10 C15,6 17,4 18,3 C19,4 21,6 23,10" fill="none" stroke={p3} strokeWidth="0.5" opacity="0.5"/>
+      </g>
+    </svg>
+  );
+}
+
+export default function HomePage() {
+  const landingRef = useRef(null);
+  const scrollTimer = useRef(null);
+  const absYs = useRef([]);            // absolute Y positions of section gaps
+  const [viewYs, setViewYs] = useState([]); // viewport-relative Y for each tulip
+  const [activeTulip, setActiveTulip] = useState(0);
+  const [bugY, setBugY] = useState(-100);
+  const [isFlying, setIsFlying] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
+
+  // Compute absolute tulip positions (section boundaries)
+  useEffect(() => {
+    if (!mounted) return;
+    function compute() {
+      const el = landingRef.current;
+      if (!el) return;
+      const sections = el.querySelectorAll('.section, .stat-strip, .claude-strip, footer');
+      if (sections.length < 2) return;
+      const positions = [];
+      for (let i = 0; i < sections.length - 1; i++) {
+        const r1 = sections[i].getBoundingClientRect();
+        const r2 = sections[i + 1].getBoundingClientRect();
+        positions.push(window.scrollY + (r1.bottom + r2.top) / 2);
+      }
+      absYs.current = positions;
+      updateView(positions);
+    }
+    function updateView(pos) {
+      const sy = window.scrollY;
+      setViewYs(pos.map(y => y - sy));
+    }
+    setTimeout(compute, 600);
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
+  }, [mounted]);
+
+  // Scroll: find nearest tulip, update positions
+  useEffect(() => {
+    if (!mounted || absYs.current.length === 0) return;
+
+    function onScroll() {
+      const pos = absYs.current;
+      if (pos.length === 0) return;
+      setIsFlying(true);
+
+      const sy = window.scrollY;
+      const viewCenter = sy + window.innerHeight / 2;
+      let nearest = 0, minDist = Infinity;
+      pos.forEach((y, i) => {
+        const d = Math.abs(y - viewCenter);
+        if (d < minDist) { minDist = d; nearest = i; }
+      });
+      setActiveTulip(nearest);
+      setBugY(pos[nearest] - sy - 38);
+      setViewYs(pos.map(y => y - sy));
+
+      clearTimeout(scrollTimer.current);
+      scrollTimer.current = setTimeout(() => setIsFlying(false), 1800);
+    }
+
+    // Set initial position without triggering flying state
+    const pos = absYs.current;
+    if (pos.length > 0) {
+      const sy = window.scrollY;
+      const viewCenter = sy + window.innerHeight / 2;
+      let nearest = 0, minDist = Infinity;
+      pos.forEach((y, i) => {
+        const d = Math.abs(y - viewCenter);
+        if (d < minDist) { minDist = d; nearest = i; }
+      });
+      setActiveTulip(nearest);
+      setBugY(pos[nearest] - sy - 38);
+      setViewYs(pos.map(y => y - sy));
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      clearTimeout(scrollTimer.current);
+    };
+  }, [mounted, absYs.current.length]);
 
   return (
     <>
@@ -1649,8 +1655,64 @@ export default function HomePage() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
       </Head>
-      <style dangerouslySetInnerHTML={{ __html: landingCSS + overrideCSS }} />
-      <div className="diagnovera-landing" dangerouslySetInnerHTML={{ __html: body }} />
+      <style dangerouslySetInnerHTML={{ __html: landingCSS + overrideCSS + ladybugCSS }} />
+      <div ref={landingRef} className="diagnovera-landing" dangerouslySetInnerHTML={{ __html: landingBody }} />
+
+      {/* Left panel: tulip garden */}
+      {mounted && viewYs.length > 0 && (
+        <div className="lb-garden">
+          {viewYs.map((vy, i) => (
+            <div key={i} className="lb-tulip-stem" style={{
+              top: vy - 80,
+              position: 'fixed',
+              left: i % 2 === 0 ? 14 : 20,
+              opacity: activeTulip === i ? 1 : 0.5,
+              transition: 'opacity 0.6s',
+              transform: i % 2 === 0 ? 'rotate(-3deg)' : 'rotate(4deg)',
+            }}>
+              <Tulip palette={TULIP_PALETTES[i % TULIP_PALETTES.length]} flip={i % 2 !== 0} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Ladybug — fixed in left panel, flies between tulips */}
+      {mounted && (
+        <div
+          className={'lb-bug ' + (isFlying ? 'flying' : 'sitting')}
+          style={{ top: bugY }}
+        >
+          <svg width="28" height="28" viewBox="-24 -34 48 52" xmlns="http://www.w3.org/2000/svg">
+            <ellipse className="lb-wing-l" cx="-6" cy="0" rx="12" ry="10" fill="#d42010" style={{transformOrigin:'0px 0px'}} />
+            <ellipse className="lb-wing-r" cx="6" cy="0" rx="12" ry="10" fill="#d42010" style={{transformOrigin:'0px 0px'}} />
+            <ellipse cx="0" cy="0" rx="6" ry="9" fill="#1a0800" />
+            <ellipse className="lb-shell" cx="0" cy="0" rx="13" ry="11" fill="#d42010" />
+            <ellipse cx="-3.5" cy="-4" rx="5" ry="3.5" fill="rgba(255,120,100,0.45)" />
+            <line x1="0" y1="-11" x2="0" y2="11" stroke="#1a0800" strokeWidth="1.4" />
+            <circle cx="-4.5" cy="-3.5" r="2.5" fill="#1a0800" />
+            <circle cx="-5" cy="3" r="2" fill="#1a0800" />
+            <circle cx="4.5" cy="-3.5" r="2.5" fill="#1a0800" />
+            <circle cx="5" cy="3" r="2" fill="#1a0800" />
+            <ellipse cx="0" cy="-13" rx="7" ry="6" fill="#1a0800" />
+            <circle cx="-3.5" cy="-14" r="2.2" fill="white" />
+            <circle cx="3.5" cy="-14" r="2.2" fill="white" />
+            <circle cx="-3" cy="-14" r="1.2" fill="#1a0800" />
+            <circle cx="3.5" cy="-14" r="1.2" fill="#1a0800" />
+            <circle cx="-2.5" cy="-14.8" r="0.5" fill="white" />
+            <circle cx="4" cy="-14.8" r="0.5" fill="white" />
+            <path d="M-3,-18 C-5,-24 -8,-28 -10,-30" fill="none" stroke="#1a0800" strokeWidth="1.2" strokeLinecap="round" />
+            <circle cx="-10" cy="-30" r="1.5" fill="#1a0800" />
+            <path d="M3,-18 C5,-24 8,-28 10,-30" fill="none" stroke="#1a0800" strokeWidth="1.2" strokeLinecap="round" />
+            <circle cx="10" cy="-30" r="1.5" fill="#1a0800" />
+            <g className="lb-legs">
+              <path d="M-12,-2 C-18,-4 -20,-2 -18,0" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
+              <path d="M-12,4 C-18,4 -20,6 -18,8" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
+              <path d="M12,-2 C18,-4 20,-2 18,0" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
+              <path d="M12,4 C18,4 20,6 18,8" fill="none" stroke="#1a0800" strokeWidth="1.1" strokeLinecap="round" />
+            </g>
+          </svg>
+        </div>
+      )}
     </>
   );
 }
