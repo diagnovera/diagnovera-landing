@@ -34,14 +34,11 @@ nav{
 }
 .logo{display:flex;align-items:center;gap:10px}
 .logo-mark{
-  width:34px;height:34px;border-radius:8px;flex-shrink:0;
-  background:linear-gradient(135deg,#1565c0,#0288d1,#00bcd4);
+  width:34px;height:34px;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 3px 12px rgba(2,136,209,0.38);
 }
-.logo-name{font-family:'Playfair Display',Georgia,serif;font-size:19px;font-weight:900;color:var(--ink);letter-spacing:-.3px}
-.logo-name b{color:var(--blue)}
-.logo-tm{font-size:7.5px;color:var(--blue);vertical-align:super;letter-spacing:1px;font-family:sans-serif}
+.logo-name{font-family:'Inter','DM Sans',sans-serif;font-size:19px;font-weight:700;color:var(--ink);letter-spacing:-0.025em}
+.logo-name b{color:#1FA9E8;font-weight:700}
 .nav-links{display:flex;gap:26px}
 .nav-links a{font-size:13px;color:var(--ink3);transition:color .2s}
 .nav-links a:hover{color:var(--ink)}
@@ -314,8 +311,8 @@ footer{
   padding:64px 52px 36px;
 }
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:52px;max-width:1100px;margin:0 auto 48px}
-.flogo{font-family:'Playfair Display',Georgia,serif;font-size:19px;font-weight:900;color:var(--ink);margin-bottom:10px}
-.flogo b{color:var(--blue)}
+.flogo{font-family:'Inter','DM Sans',sans-serif;font-size:19px;font-weight:700;color:var(--ink);letter-spacing:-0.025em;margin-bottom:10px}
+.flogo b{color:#1FA9E8;font-weight:700}
 .fdesc{font-size:12.5px;color:var(--ink3);line-height:1.70;max-width:240px;margin-bottom:18px}
 .fcontact{font-size:12px;color:var(--ink3);line-height:2.0}
 .fcontact strong{color:var(--ink);font-weight:600;display:block;margin-top:10px}
@@ -341,28 +338,31 @@ const landingBody = `<!-- NAV -->
 <nav>
   <a class="logo" href="#">
     <div class="logo-mark">
-      <svg width="22" height="22" viewBox="-16 -20 32 34" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="0" cy="0" rx="10" ry="8.5" fill="#d42010"/>
-        <ellipse cx="-2.5" cy="-3" rx="3.8" ry="2.8" fill="rgba(255,160,140,0.45)"/>
-        <line x1="0" y1="-8.5" x2="0" y2="8.5" stroke="#1a0800" stroke-width="1.2"/>
-        <circle cx="-3.5" cy="-2.5" r="2" fill="#1a0800"/>
-        <circle cx="-4" cy="2.5" r="1.6" fill="#1a0800"/>
-        <circle cx="3.5" cy="-2.5" r="2" fill="#1a0800"/>
-        <circle cx="4" cy="2.5" r="1.6" fill="#1a0800"/>
-        <ellipse cx="0" cy="-9.5" rx="5.2" ry="4.5" fill="#1a0800"/>
-        <circle cx="-2.5" cy="-10.5" r="1.7" fill="white"/>
-        <circle cx="2.5" cy="-10.5" r="1.7" fill="white"/>
-        <circle cx="-2" cy="-10.5" r="0.9" fill="#1a0800"/>
-        <circle cx="2.8" cy="-10.5" r="0.9" fill="#1a0800"/>
-        <circle cx="-1.6" cy="-11.1" r="0.4" fill="white"/>
-        <circle cx="3.2" cy="-11.1" r="0.4" fill="white"/>
-        <path d="M-2,-13.5 C-3.5,-16.5 -6,-18 -7.5,-19" fill="none" stroke="#1a0800" stroke-width="0.9" stroke-linecap="round"/>
-        <circle cx="-7.5" cy="-19" r="1.1" fill="#1a0800"/>
-        <path d="M2,-13.5 C3.5,-16.5 6,-18 7.5,-19" fill="none" stroke="#1a0800" stroke-width="0.9" stroke-linecap="round"/>
-        <circle cx="7.5" cy="-19" r="1.1" fill="#1a0800"/>
+      <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+        <path d="M32 32 Q14 22 6 38 Q12 48 30 42 Z" fill="#1FA9E8" fill-opacity="0.34" stroke="#1FA9E8" stroke-width="1.4" stroke-opacity="0.7"/>
+        <path d="M32 32 Q50 22 58 38 Q52 48 34 42 Z" fill="#1FA9E8" fill-opacity="0.34" stroke="#1FA9E8" stroke-width="1.4" stroke-opacity="0.7"/>
+        <path d="M32 32 Q22 30 14 38" stroke="#1FA9E8" stroke-width="0.8" stroke-opacity="0.55" fill="none"/>
+        <path d="M32 32 Q42 30 50 38" stroke="#1FA9E8" stroke-width="0.8" stroke-opacity="0.55" fill="none"/>
+        <path d="M27 17 Q23 11 21 7" stroke="#0F1419" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        <path d="M37 17 Q41 11 43 7" stroke="#0F1419" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        <circle cx="21" cy="7" r="1.4" fill="#0F1419"/>
+        <circle cx="43" cy="7" r="1.4" fill="#0F1419"/>
+        <path d="M24 18 Q24 14 32 14 Q40 14 40 18 L40 22 L24 22 Z" fill="#0F1419"/>
+        <g transform="rotate(-12 24 38)">
+          <path d="M32 22 Q32 50 28 51 Q14 48 14 34 Q16 22 32 22 Z" fill="#D7563E"/>
+          <path d="M32 22 L32 51 L29 51 L29 22 Z" fill="#A8402E" opacity="0.55"/>
+          <circle cx="22" cy="32" r="2.4" fill="white"/>
+          <circle cx="26" cy="42" r="2.0" fill="white"/>
+        </g>
+        <g transform="rotate(12 40 38)">
+          <path d="M32 22 Q32 50 36 51 Q50 48 50 34 Q48 22 32 22 Z" fill="#D7563E"/>
+          <path d="M32 22 L32 51 L35 51 L35 22 Z" fill="#A8402E" opacity="0.55"/>
+          <circle cx="42" cy="32" r="2.4" fill="white"/>
+          <circle cx="38" cy="42" r="2.0" fill="white"/>
+        </g>
       </svg>
     </div>
-    <span class="logo-name">Diagno<b>Vera</b><sup class="logo-tm">&#8482;</sup></span>
+    <span class="logo-name">Diagno<b>vera</b></span>
   </a>
   <div class="nav-links">
     <a href="#platform">Platform</a>
@@ -1375,7 +1375,7 @@ const landingBody = `<!-- NAV -->
 <footer id="contact">
   <div class="footer-grid">
     <div>
-      <div class="flogo">Diagno<b>Vera</b>&#8482; &middot; DVERA&#8482;</div>
+      <div class="flogo">Diagno<b>vera</b></div>
       <p class="fdesc">An AI-powered nephrology intelligence platform &mdash; verified diagnosis, intelligent documentation, automated billing, telehealth, and universal EHR connectivity &mdash; built on Anthropic Claude.</p>
       <div class="fcontact">
         <strong>Headquarters</strong>
