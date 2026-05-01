@@ -334,6 +334,123 @@ footer{
 .fsocial{display:flex;gap:14px}
 .fsocial a{font-size:12px;color:var(--ink3);opacity:.80;transition:opacity .2s}
 .fsocial a:hover{opacity:1}
+
+/* ── PATIENT PORTAL NAV BUTTON ── */
+.btn-portal{
+  background:linear-gradient(135deg,#0f172a,#1e293b);color:#38bdf8;
+  padding:8px 18px;border-radius:7px;
+  font-size:13px;font-weight:600;letter-spacing:.3px;
+  border:1.5px solid rgba(56,189,248,0.35);
+  transition:background .2s,transform .15s,border-color .2s;
+}
+.btn-portal:hover{background:#0f172a;border-color:rgba(56,189,248,0.6);transform:translateY(-1px)}
+
+/* ── HAMBURGER ── */
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;z-index:210}
+.hamburger span{display:block;width:22px;height:2px;background:var(--ink);margin:5px 0;border-radius:2px;transition:transform .3s,opacity .2s}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-overlay{display:none}
+
+/* ── RESPONSIVE: TABLET (<=900px) ── */
+@media(max-width:900px){
+  nav{padding:0 20px;gap:8px}
+  .nav-links{display:none}
+  .hamburger{display:block}
+  .mobile-overlay{
+    display:none;position:fixed;inset:0;z-index:199;
+    background:rgba(250,248,244,0.98);
+    padding:80px 28px 40px;
+    flex-direction:column;gap:0;
+    overflow-y:auto;
+    backdrop-filter:blur(8px);
+  }
+  .mobile-overlay.open{display:flex}
+  .mobile-overlay a{
+    display:block;padding:16px 0;
+    font-size:17px;font-weight:500;color:var(--ink2);
+    border-bottom:1px solid var(--border);
+    transition:color .2s;
+  }
+  .mobile-overlay a:last-child{border-bottom:none}
+  .mobile-overlay .mob-ctas{
+    display:flex;flex-direction:column;gap:10px;
+    margin-top:24px;padding-top:16px;
+    border-top:2px solid var(--border);
+  }
+  .mobile-overlay .mob-ctas a{
+    text-align:center;padding:14px;border-radius:10px;
+    font-weight:600;font-size:15px;border-bottom:none;
+  }
+  .hero{height:auto;min-height:auto;max-height:none;padding-bottom:0}
+  .hero-content{position:relative;padding:32px 20px 40px;flex-direction:column;align-items:flex-start;gap:24px}
+  .hero h1{font-size:32px;letter-spacing:-1px}
+  .hero-sub{font-size:14px}
+  .hero-ctas{flex-wrap:wrap}
+  .hero-trust{flex-direction:row;flex-wrap:wrap;align-items:flex-start}
+  .stat-strip{grid-template-columns:repeat(2,1fr)}
+  .section{padding:48px 20px}
+  .h2{font-size:28px}
+  .card-grid{grid-template-columns:repeat(2,1fr)}
+  .split{grid-template-columns:1fr;gap:32px}
+  .split.rev{direction:ltr}
+  .fac-grid{grid-template-columns:repeat(2,1fr)}
+  .stake{grid-template-columns:repeat(3,1fr)}
+  .stake .sc:nth-child(4),.stake .sc:nth-child(5){border-top:1px solid var(--border)}
+  .claude-strip{grid-template-columns:1fr;padding:36px 20px;gap:24px;text-align:center}
+  .claude-text p{max-width:100%}
+  .ant-badge{justify-content:center}
+  .claude-ctas{flex-direction:row;justify-content:center}
+  .quote-panel{padding:28px 24px}
+  .qt{font-size:16px}
+  footer{padding:40px 20px 28px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:28px}
+  .footer-bottom{flex-direction:column;align-items:flex-start;gap:12px}
+}
+
+/* ── RESPONSIVE: PHONE (<=540px) ── */
+@media(max-width:540px){
+  nav{height:56px;padding:0 16px}
+  .logo-name{font-size:16px}
+  .beta-badge{font-size:8px;padding:1px 5px}
+  .nav-right .btn-demo{display:none}
+  .hero-content{padding:24px 16px 32px}
+  .hero h1{font-size:26px;letter-spacing:-.5px}
+  .hero-sub{font-size:13px;margin-bottom:20px}
+  .hero-kicker{font-size:9.5px;padding:5px 12px}
+  .btn-enter{padding:11px 20px;font-size:13.5px}
+  .btn-ghost{padding:10px 16px;font-size:13px}
+  .btn-portal{padding:10px 16px;font-size:13px}
+  .hero-ctas{gap:8px}
+  .hero-trust{gap:6px}
+  .trust-badge{font-size:10px;padding:5px 10px}
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .st-num{font-size:28px}
+  .st-lbl{font-size:9px}
+  .section{padding:36px 16px}
+  .h2{font-size:24px}
+  .section-lead{font-size:14px}
+  .card-grid{grid-template-columns:1fr}
+  .fcard{padding:22px 20px}
+  .fac-grid{grid-template-columns:1fr}
+  .stake{grid-template-columns:1fr}
+  .stake .sc{border-right:none;border-bottom:1px solid var(--border)}
+  .stake .sc:last-child{border-bottom:none}
+  .claude-strip{padding:28px 16px;gap:20px}
+  .claude-ctas{flex-direction:column;width:100%}
+  .btn-claude,.btn-ant{width:100%}
+  .quote-panel{padding:22px 18px}
+  .qt-title{font-size:18px}
+  .qt{font-size:15px}
+  .qt-emphasis{font-size:16px}
+  footer{padding:32px 16px 24px}
+  .footer-grid{grid-template-columns:1fr;gap:24px}
+  .fcol-title{margin-top:8px}
+  .fcontact{font-size:11.5px}
+  .footer-bottom{gap:10px}
+  .fbadges{flex-wrap:wrap}
+}
 `;
 
 const landingBody = `<!-- NAV -->
@@ -377,11 +494,28 @@ const landingBody = `<!-- NAV -->
     <a href="#contact">Contact</a>
   </div>
   <div class="nav-right">
+    <a class="btn-portal" href="https://diagnovera-924070815611.us-west1.run.app/patient-portal">Patient Portal</a>
     <a class="btn-demo" href="#contact">Request Demo</a>
-    <a href="https://diagnovera-cms-924070815611.us-central1.run.app/admin" target="_blank" rel="noopener noreferrer" style="font-size:13px;color:#64748b;text-decoration:none;padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;transition:all 0.2s">DiagnoVera CMS</a>
-    <a class="btn-login" href="https://diagnovera-924070815611.us-west1.run.app/login">Sign In &#8594;</a>
+    <a class="btn-login" href="https://diagnovera-924070815611.us-west1.run.app/login">Provider Sign In &#8594;</a>
   </div>
+  <button class="hamburger" id="hamburger" onclick="document.getElementById('mobileMenu').classList.toggle('open');this.classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="mobile-overlay" id="mobileMenu">
+  <a href="#platform" onclick="document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('open')">Platform</a>
+  <a href="#lambda-dx" onclick="document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('open')">&#923; Lambda Dx</a>
+  <a href="#telehealth" onclick="document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('open')">Telehealth</a>
+  <a href="#billing" onclick="document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('open')">Billing &amp; RCM</a>
+  <a href="#solutions" onclick="document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('open')">Solutions</a>
+  <a href="https://diagnovera-924070815611.us-west1.run.app/about">Documentation</a>
+  <a href="#contact" onclick="document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('open')">Contact</a>
+  <div class="mob-ctas">
+    <a href="https://diagnovera-924070815611.us-west1.run.app/patient-portal" style="background:linear-gradient(135deg,#0f172a,#1e293b);color:#38bdf8;border:1.5px solid rgba(56,189,248,0.35)">Patient Portal</a>
+    <a href="https://diagnovera-924070815611.us-west1.run.app/login" style="background:var(--blue);color:#fff">Provider Sign In</a>
+    <a href="#contact" onclick="document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('open')" style="border:1.5px solid var(--border);color:var(--ink2)">Request Demo</a>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -1001,6 +1135,7 @@ const landingBody = `<!-- NAV -->
       <p class="hero-sub">DiagnoVera connects <strong>hospitals, nursing homes, dialysis centers, IPAs, and payers</strong> with AI diagnosis, automated documentation, nephrology billing, and telehealth — all in one verified platform.</p>
       <div class="hero-ctas">
         <a class="btn-enter" href="https://diagnovera-924070815611.us-west1.run.app/login">Enter Platform &#8594;</a>
+        <a class="btn-portal" href="https://diagnovera-924070815611.us-west1.run.app/patient-portal">Patient Portal</a>
         <a class="btn-ghost" href="#contact">Request a Demo</a>
       </div>
     </div>
@@ -1405,7 +1540,7 @@ const landingBody = `<!-- NAV -->
         <a href="#">H&amp;P Note Generation</a>
         <a href="#">Billing &amp; RCM</a>
         <a href="#">Telehealth Console</a>
-        <a href="#">Patient Portal</a>
+        <a href="https://diagnovera-924070815611.us-west1.run.app/patient-portal">Patient Portal</a>
         <a href="#">Payer Integration</a>
         <a href="#">FHIR Integrations</a>
         <a href="#">Population Analytics</a>
@@ -1438,8 +1573,8 @@ const landingBody = `<!-- NAV -->
         <a href="#">Terms of Service</a>
         <a href="#">HIPAA Notice</a>
         <a href="#">BAA Request</a>
-        <a href="https://diagnovera-924070815611.us-west1.run.app/login">Sign In</a>
-        <a href="https://diagnovera-cms-924070815611.us-central1.run.app/admin" style="opacity:0.5;font-size:11px">Admin</a>
+        <a href="https://diagnovera-924070815611.us-west1.run.app/patient-portal">Patient Portal</a>
+        <a href="https://diagnovera-924070815611.us-west1.run.app/login">Provider Sign In</a>
       </div>
     </div>
   </div>
