@@ -337,13 +337,14 @@ footer{
 
 /* ── PATIENT PORTAL NAV BUTTON ── */
 .btn-portal{
-  background:linear-gradient(135deg,#0f172a,#1e293b);color:#38bdf8;
+  background:#fff;color:#0277b0;
   padding:8px 18px;border-radius:7px;
-  font-size:13px;font-weight:600;letter-spacing:.3px;
-  border:1.5px solid rgba(56,189,248,0.35);
-  transition:background .2s,transform .15s,border-color .2s;
+  font-size:13px;font-weight:700;letter-spacing:.3px;
+  border:1.5px solid rgba(2,136,209,0.30);
+  box-shadow:0 2px 8px rgba(2,136,209,0.12);
+  transition:background .2s,transform .15s,border-color .2s,box-shadow .2s;
 }
-.btn-portal:hover{background:#0f172a;border-color:rgba(56,189,248,0.6);transform:translateY(-1px)}
+.btn-portal:hover{background:#f0f9ff;border-color:rgba(2,136,209,0.50);transform:translateY(-1px);box-shadow:0 4px 14px rgba(2,136,209,0.20)}
 
 /* ── HAMBURGER ── */
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;z-index:210}
@@ -511,7 +512,7 @@ const landingBody = `<!-- NAV -->
   <a href="https://diagnovera-924070815611.us-west1.run.app/about">Documentation</a>
   <a href="#contact" onclick="document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('open')">Contact</a>
   <div class="mob-ctas">
-    <a href="https://diagnovera-924070815611.us-west1.run.app/patient-portal" style="background:linear-gradient(135deg,#0f172a,#1e293b);color:#38bdf8;border:1.5px solid rgba(56,189,248,0.35)">Patient Portal</a>
+    <a href="https://diagnovera-924070815611.us-west1.run.app/patient-portal" style="background:#fff;color:#0277b0;border:1.5px solid rgba(2,136,209,0.30);font-weight:700">Patient Portal</a>
     <a href="https://diagnovera-924070815611.us-west1.run.app/login" style="background:var(--blue);color:#fff">Provider Sign In</a>
     <a href="#contact" onclick="document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('open')" style="border:1.5px solid var(--border);color:var(--ink2)">Request Demo</a>
   </div>
@@ -1613,6 +1614,11 @@ const overrideCSS = `
   .diagnovera-landing .btn-ant {
     color: rgba(210,230,245,0.90) !important;
     border-color: rgba(255,255,255,0.28) !important;
+  }
+  .diagnovera-landing .btn-portal {
+    background: #fff !important;
+    color: #0277b0 !important;
+    border-color: rgba(2,136,209,0.30) !important;
   }
   .diagnovera-landing .btn-login {
     background: var(--blue) !important;
