@@ -496,7 +496,7 @@ const landingBody = `<!-- NAV -->
   </div>
   <div class="nav-right">
     <a class="btn-portal" href="https://diagnovera-924070815611.us-west1.run.app/patient-portal">Patient Portal</a>
-    <a class="btn-demo" href="https://diagnovera-cms-924070815611.us-central1.run.app/admin" target="_blank" rel="noopener noreferrer">CMS Admin</a>
+    <a class="btn-demo" href="https://diagnovera-cms-924070815611.us-west1.run.app/admin" target="_blank" rel="noopener noreferrer">CMS Admin</a>
     <a class="btn-login" href="https://diagnovera-924070815611.us-west1.run.app/login">Provider Sign In &#8594;</a>
   </div>
   <button class="hamburger" id="hamburger" onclick="document.getElementById('mobileMenu').classList.toggle('open');this.classList.toggle('open')">
@@ -513,7 +513,7 @@ const landingBody = `<!-- NAV -->
   <a href="#contact" onclick="document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('open')">Contact</a>
   <div class="mob-ctas">
     <a href="https://diagnovera-924070815611.us-west1.run.app/patient-portal" style="background:#fff;color:#0277b0;border:1.5px solid rgba(2,136,209,0.30);font-weight:700">Patient Portal</a>
-    <a href="https://diagnovera-cms-924070815611.us-central1.run.app/admin" target="_blank" rel="noopener noreferrer" style="background:#f8fafc;color:#475569;border:1.5px solid #e2e8f0;font-weight:600">CMS Admin</a>
+    <a href="https://diagnovera-cms-924070815611.us-west1.run.app/admin" target="_blank" rel="noopener noreferrer" style="background:#f8fafc;color:#475569;border:1.5px solid #e2e8f0;font-weight:600">CMS Admin</a>
     <a href="https://diagnovera-924070815611.us-west1.run.app/login" style="background:var(--blue);color:#fff">Provider Sign In</a>
   </div>
 </div>
@@ -1137,7 +1137,7 @@ const landingBody = `<!-- NAV -->
       <div class="hero-ctas">
         <a class="btn-enter" href="https://diagnovera-924070815611.us-west1.run.app/login">Enter Platform &#8594;</a>
         <a class="btn-portal" href="https://diagnovera-924070815611.us-west1.run.app/patient-portal">Patient Portal</a>
-        <a class="btn-ghost" href="https://diagnovera-cms-924070815611.us-central1.run.app/admin" target="_blank" rel="noopener noreferrer">CMS Admin</a>
+        <a class="btn-ghost" href="https://diagnovera-cms-924070815611.us-west1.run.app/admin" target="_blank" rel="noopener noreferrer">CMS Admin</a>
       </div>
     </div>
     <div class="hero-trust">
