@@ -1797,7 +1797,7 @@ export default function HomePage() {
   return (
     <>
       <Head>
-        <title>DiagnoVera\u2122 \u2014 Nephrology Intelligence Platform</title>
+        <title>DiagnoVera™ — Nephrology Intelligence Platform</title>
         <meta name="description" content="DiagnoVera is a full-spectrum nephrology intelligence platform with AI diagnosis, automated documentation, nephrology billing, telehealth, and universal FHIR connectivity." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
